@@ -55,6 +55,9 @@ class MainWindow(QMainWindow):
         self.uic.pushButton.clicked.connect(self.btn_send_serial_monitor)
         self.uic.pushButton_2.clicked.connect(self.btn_clear_serial_monitor)
 
+        self.uic.actionOpen.triggered.connect(self.open_serial_monitor)
+        self.uic.actionClose.triggered.connect(self.close_serial_monitor)
+
     def btn_send_pid_params(self):
         k_p = self.uic.lineEdit_2.text()
         k_i = self.uic.lineEdit_3.text()
@@ -141,6 +144,12 @@ class MainWindow(QMainWindow):
         except:
             print("Error parsing data")
             self.serial_monitor("Error parsing data")
+    
+    def open_serial_monitor(self):
+        self.uic.groupBox.setVisible(True)
+
+    def close_serial_monitor(self):
+        self.uic.groupBox.setVisible(False)
 
     def serial_monitor(self, text):
         display_text = str(time.strftime("%H:%M:%S", time.localtime())) + " -> " + text
