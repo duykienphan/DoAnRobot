@@ -6,6 +6,7 @@ import time
 import serial.tools.list_ports
 
 from esp import ESP
+from graphic import CHART
 
 class SerialReceiverThread(QThread):
     # Tín hiệu để gửi dữ liệu nhận được từ luồng đến giao diện chính
@@ -29,12 +30,14 @@ class SerialReceiverThread(QThread):
         self.is_running = False
         self.wait()  # Đợi luồng dừng hẳn
 
-class MainWindow():
+class MainWindow(QMainWindow):
     def __init__(self):
+        super().__init__()
         self.main_win = QMainWindow()
         self.uic = Ui_MainWindow()
         self.uic.setupUi(self.main_win)
         self.esp = ESP()
+        self.chart = CHART()
 
         self.COM_PORT = ""
         self.BAUD_RATE = 115200
@@ -103,7 +106,7 @@ class MainWindow():
 
                 # Khởi tạo và chạy luồng nhận dữ liệu
                 self.receiver_thread = SerialReceiverThread(self.serialCom)
-                self.receiver_thread.data_received.connect(self.serial_monitor)
+                self.receiver_thread.data_received.connect(self.handle_data_received)
                 self.receiver_thread.start()  # Bắt đầu nhận dữ liệu
             except:
                 print("Failed to initialize serial port")
@@ -123,6 +126,21 @@ class MainWindow():
             print("Serial port closed.")
             self.serial_monitor("Serial port closed.")
         self.uic.label_13.setText("N/A")
+
+    def handle_data_received(self, data):
+        print(data)
+        self.serial_monitor(data)
+
+        try:
+            values = data.split('/') 
+            if len(values) == 4:
+                print(values)
+            else:
+                print("Error: Invalid data format")
+                self.serial_monitor("Error: Invalid data format")
+        except:
+            print("Error parsing data")
+            self.serial_monitor("Error parsing data")
 
     def serial_monitor(self, text):
         display_text = str(time.strftime("%H:%M:%S", time.localtime())) + " -> " + text

@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,4,1">
     <item>
      <widget class="QLabel" name="label">
       <property name="text">
@@ -40,6 +40,12 @@
        <string>System Controller</string>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,3">
+       <property name="topMargin">
+        <number>9</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QWidget" name="widget_9" native="true">
          <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -365,6 +371,12 @@
           </property>
           <item>
            <widget class="QLabel" name="label_14">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>15</height>
+             </size>
+            </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;System Realtime Graph&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
@@ -375,33 +387,63 @@
           </item>
           <item>
            <widget class="QLabel" name="label_9">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>15</height>
+             </size>
+            </property>
             <property name="text">
              <string>Tín hiệu đặt/thực tế</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QGraphicsView" name="graphicsView"/>
+           <widget class="QWidget" name="widget_2" native="true">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QLabel" name="label_11">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>15</height>
+             </size>
+            </property>
             <property name="text">
              <string>Tín hiệu sai số</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QGraphicsView" name="graphicsView_2"/>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>Tín hiệu bộ PID</string>
+           <widget class="QWidget" name="widget_11" native="true">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QGraphicsView" name="graphicsView_3"/>
+           <widget class="QLabel" name="label_10">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>15</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Tín hiệu PID</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QWidget" name="widget_12" native="true">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
