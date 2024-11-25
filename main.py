@@ -1,12 +1,12 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtCore import QThread, pyqtSignal, QObject
+from PyQt5.QtCore import QThread, pyqtSignal, QObject, QTimer
 from gui import Ui_MainWindow
 import time
 import serial.tools.list_ports
+import pyqtgraph as pg
 
 from esp import ESP
-from graphic import CHART
 
 class SerialReceiverThread(QThread):
     # Tín hiệu để gửi dữ liệu nhận được từ luồng đến giao diện chính
@@ -37,12 +37,45 @@ class MainWindow(QMainWindow):
         self.uic = Ui_MainWindow()
         self.uic.setupUi(self.main_win)
         self.esp = ESP()
-        self.chart = CHART()
+
+        # Đồ thị PyQtGraph 1
+        self.uic.graphicsView.setBackground("w")
+        self.curve = self.uic.graphicsView.plot(pen=pg.mkPen(color='r', width=2))
+        self.curve_line2 = self.uic.graphicsView.plot(pen=pg.mkPen(color='b', width=2))
+        self.uic.graphicsView.setLabel('left', 'Value')
+        self.uic.graphicsView.setLabel('bottom', 'Time (ms)')
+        legend = self.uic.graphicsView.addLegend()
+        legend.addItem(self.curve, "Tín hiệu đặt")
+        legend.addItem(self.curve_line2, "Tín hiệu thực tế")
+
+        # Đồ thị PyQtGraph 2
+        self.uic.graphicsView_2.setBackground("w")
+        self.curve_2 = self.uic.graphicsView_2.plot(pen=pg.mkPen(color='r', width=2))
+        self.uic.graphicsView_2.setLabel('left', 'Value')
+        self.uic.graphicsView_2.setLabel('bottom', 'Time (ms)')
+        legend_2 = self.uic.graphicsView_2.addLegend()
+        legend_2.addItem(self.curve_2, "Tín hiệu sai số")
+
+        # Đồ thị PyQtGraph 3
+        self.uic.graphicsView_3.setBackground("w")
+        self.curve_3 = self.uic.graphicsView_3.plot(pen=pg.mkPen(color='r', width=2))
+        self.uic.graphicsView_3.setLabel('left', 'Value')
+        self.uic.graphicsView_3.setLabel('bottom', 'Time (ms)')
+        legend_3 = self.uic.graphicsView_3.addLegend()
+        legend_3.addItem(self.curve_3, "Tín hiệu PID")
 
         self.COM_PORT = ""
         self.BAUD_RATE = 115200
         self.PORT_LIST, self.DRIVER_LIST = self.esp.get_com_port()
         self.serialCom = None
+        self.data_graph = []
+        self.data_graph_line2 = []
+        self.data_graph_2 = []
+        self.data_graph_3 = []
+        self.time_graph = []
+        self.time_graph_2 = []
+        self.time_graph_3 = []
+        self.time_sent = 0
 
         self.uic.comboBox.addItems(self.PORT_LIST)
         self.uic.comboBox_2.addItems(["4800", "9600", "14400", "19200", "28800", "38400", "57600", "115200"])
@@ -57,6 +90,65 @@ class MainWindow(QMainWindow):
 
         self.uic.actionOpen.triggered.connect(self.open_serial_monitor)
         self.uic.actionClose.triggered.connect(self.close_serial_monitor)
+        self.uic.actionClear_Graph_1.triggered.connect(self.clear_graph_1)
+        self.uic.actionClear_Graph_2.triggered.connect(self.clear_graph_2)
+        self.uic.actionClear_Graph_3.triggered.connect(self.clear_graph_3)
+        self.uic.actionClear_All.triggered.connect(self.clear_all)
+        self.uic.actionExit.triggered.connect(self.exit_application)
+
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_plot)
+    
+    def clear_graph_1(self):
+        self.curve.clear()
+        self.curve_line2.clear()
+        self.data_graph = []
+        self.data_graph_line2 = []
+        self.time_graph = []
+
+    def clear_graph_2(self):
+        self.curve_2.clear()
+        self.data_graph_2 = []
+        self.time_graph_2 = []
+
+
+    def clear_graph_3(self):
+        self.curve_3.clear()
+        self.data_graph_3 = []
+        self.time_graph_3 = []
+
+    def clear_all(self):
+        self.curve.clear()
+        self.curve_line2.clear()
+        self.curve_2.clear()
+        self.curve_3.clear()
+
+        self.data_graph = []
+        self.data_graph_line2 = []
+        self.data_graph_2 = []
+        self.data_graph_3 = []
+        self.time_graph = []
+        self.time_graph_2 = []
+        self.time_graph_3 = []
+
+    def update_plot(self):
+        if len(self.data_graph) > 100:
+            self.data_graph.pop(0)
+            self.data_graph_line2.pop(0)
+            self.time_graph.pop(0)
+            #print(self.data_graph)
+        self.curve.setData(self.time_graph, self.data_graph)
+        self.curve_line2.setData(self.time_graph, self.data_graph_line2)
+
+        if len(self.data_graph_2) > 100:
+            self.data_graph_2.pop(0)
+            self.time_graph_2.pop(0)
+        self.curve_2.setData(self.time_graph_2, self.data_graph_2)
+
+        if len(self.data_graph_3) > 100:
+            self.data_graph_3.pop(0)
+            self.time_graph_3.pop(0)
+        self.curve_3.setData(self.time_graph_3, self.data_graph_3)
 
     def btn_send_pid_params(self):
         k_p = self.uic.lineEdit_2.text()
@@ -111,6 +203,10 @@ class MainWindow(QMainWindow):
                 self.receiver_thread = SerialReceiverThread(self.serialCom)
                 self.receiver_thread.data_received.connect(self.handle_data_received)
                 self.receiver_thread.start()  # Bắt đầu nhận dữ liệu
+
+                # QTimer
+                self.clear_all()
+                self.timer.start(50)  # Cập nhật đồ thị mỗi 50ms
             except:
                 print("Failed to initialize serial port")
                 self.serial_monitor("Failed to initialize serial port")
@@ -128,16 +224,26 @@ class MainWindow(QMainWindow):
             self.serialCom.close()
             print("Serial port closed.")
             self.serial_monitor("Serial port closed.")
+        self.timer.stop()
+        self.time_sent = 0
         self.uic.label_13.setText("N/A")
 
     def handle_data_received(self, data):
-        print(data)
+        #print(data)
         self.serial_monitor(data)
 
         try:
             values = data.split('/') 
             if len(values) == 4:
-                print(values)
+                self.data_graph.append(int(values[0]))
+                self.data_graph_line2.append(int(values[1]))
+                self.data_graph_2.append(int(values[2]))
+                self.data_graph_3.append(int(values[3]))
+                self.time_sent += 50 # Thời gian delay trên vi điều khiển
+                self.time_graph.append(self.time_sent)
+                self.time_graph_2.append(self.time_sent)
+                self.time_graph_3.append(self.time_sent)
+                #print(values)
             else:
                 print("Error: Invalid data format")
                 self.serial_monitor("Error: Invalid data format")
@@ -157,6 +263,9 @@ class MainWindow(QMainWindow):
 
     def show(self):
         self.main_win.show()
+
+    def exit_application(self):
+        QApplication.quit()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

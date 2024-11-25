@@ -399,11 +399,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="widget_2" native="true">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);</string>
-            </property>
-           </widget>
+           <widget class="PlotWidget" name="graphicsView"/>
           </item>
           <item>
            <widget class="QLabel" name="label_11">
@@ -419,11 +415,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="widget_11" native="true">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);</string>
-            </property>
-           </widget>
+           <widget class="PlotWidget" name="graphicsView_2"/>
           </item>
           <item>
            <widget class="QLabel" name="label_10">
@@ -439,11 +431,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="widget_12" native="true">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);</string>
-            </property>
-           </widget>
+           <widget class="PlotWidget" name="graphicsView_3"/>
           </item>
          </layout>
         </widget>
@@ -553,7 +541,17 @@
      <addaction name="actionOpen"/>
      <addaction name="actionClose"/>
     </widget>
+    <widget class="QMenu" name="menuClear_Graph">
+     <property name="title">
+      <string>Clear Graph</string>
+     </property>
+     <addaction name="actionClear_Graph_1"/>
+     <addaction name="actionClear_Graph_2"/>
+     <addaction name="actionClear_Graph_3"/>
+     <addaction name="actionClear_All"/>
+    </widget>
     <addaction name="menuSerial_Monitor"/>
+    <addaction name="menuClear_Graph"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -642,7 +640,34 @@
     <string>Find</string>
    </property>
   </action>
+  <action name="actionClear_Graph_1">
+   <property name="text">
+    <string>Clear Graph 1</string>
+   </property>
+  </action>
+  <action name="actionClear_Graph_2">
+   <property name="text">
+    <string>Clear Graph 2</string>
+   </property>
+  </action>
+  <action name="actionClear_Graph_3">
+   <property name="text">
+    <string>Clear Graph 3</string>
+   </property>
+  </action>
+  <action name="actionClear_All">
+   <property name="text">
+    <string>Clear All</string>
+   </property>
+  </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PlotWidget</class>
+   <extends>QGraphicsView</extends>
+   <header location="global">pyqtgraph</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
