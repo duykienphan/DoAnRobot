@@ -45,24 +45,8 @@ class MainWindow(QMainWindow):
         self.uic.graphicsView.setLabel('left', 'Value')
         self.uic.graphicsView.setLabel('bottom', 'Time (ms)')
         legend = self.uic.graphicsView.addLegend()
-        legend.addItem(self.curve, "Tín hiệu đặt")
-        legend.addItem(self.curve_line2, "Tín hiệu thực tế")
-
-        # Đồ thị PyQtGraph 2
-        self.uic.graphicsView_2.setBackground("w")
-        self.curve_2 = self.uic.graphicsView_2.plot(pen=pg.mkPen(color='r', width=2))
-        self.uic.graphicsView_2.setLabel('left', 'Value')
-        self.uic.graphicsView_2.setLabel('bottom', 'Time (ms)')
-        legend_2 = self.uic.graphicsView_2.addLegend()
-        legend_2.addItem(self.curve_2, "Tín hiệu sai số")
-
-        # Đồ thị PyQtGraph 3
-        self.uic.graphicsView_3.setBackground("w")
-        self.curve_3 = self.uic.graphicsView_3.plot(pen=pg.mkPen(color='r', width=2))
-        self.uic.graphicsView_3.setLabel('left', 'Value')
-        self.uic.graphicsView_3.setLabel('bottom', 'Time (ms)')
-        legend_3 = self.uic.graphicsView_3.addLegend()
-        legend_3.addItem(self.curve_3, "Tín hiệu PID")
+        legend.addItem(self.curve, "Pressure")
+        legend.addItem(self.curve_line2, "Voltage")
 
         self.COM_PORT = ""
         self.BAUD_RATE = 115200
@@ -84,15 +68,12 @@ class MainWindow(QMainWindow):
         self.uic.pushButton_6.clicked.connect(self.btn_refresh)
         self.uic.pushButton_3.clicked.connect(self.btn_connect)
         self.uic.pushButton_4.clicked.connect(self.btn_disconnect)
-        self.uic.pushButton_5.clicked.connect(self.btn_send_pid_params)
         self.uic.pushButton.clicked.connect(self.btn_send_serial_monitor)
         self.uic.pushButton_2.clicked.connect(self.btn_clear_serial_monitor)
 
         self.uic.actionOpen.triggered.connect(self.open_serial_monitor)
         self.uic.actionClose.triggered.connect(self.close_serial_monitor)
         self.uic.actionClear_Graph_1.triggered.connect(self.clear_graph_1)
-        self.uic.actionClear_Graph_2.triggered.connect(self.clear_graph_2)
-        self.uic.actionClear_Graph_3.triggered.connect(self.clear_graph_3)
         self.uic.actionClear_All.triggered.connect(self.clear_all)
         self.uic.actionExit.triggered.connect(self.exit_application)
 
@@ -106,30 +87,12 @@ class MainWindow(QMainWindow):
         self.data_graph_line2 = []
         self.time_graph = []
 
-    def clear_graph_2(self):
-        self.curve_2.clear()
-        self.data_graph_2 = []
-        self.time_graph_2 = []
-
-
-    def clear_graph_3(self):
-        self.curve_3.clear()
-        self.data_graph_3 = []
-        self.time_graph_3 = []
-
     def clear_all(self):
         self.curve.clear()
         self.curve_line2.clear()
-        self.curve_2.clear()
-        self.curve_3.clear()
 
         self.data_graph = []
         self.data_graph_line2 = []
-        self.data_graph_2 = []
-        self.data_graph_3 = []
-        self.time_graph = []
-        self.time_graph_2 = []
-        self.time_graph_3 = []
 
     def update_plot(self):
         if len(self.data_graph) > 100:
@@ -139,32 +102,6 @@ class MainWindow(QMainWindow):
             #print(self.data_graph)
         self.curve.setData(self.time_graph, self.data_graph)
         self.curve_line2.setData(self.time_graph, self.data_graph_line2)
-
-        if len(self.data_graph_2) > 100:
-            self.data_graph_2.pop(0)
-            self.time_graph_2.pop(0)
-        self.curve_2.setData(self.time_graph_2, self.data_graph_2)
-
-        if len(self.data_graph_3) > 100:
-            self.data_graph_3.pop(0)
-            self.time_graph_3.pop(0)
-        self.curve_3.setData(self.time_graph_3, self.data_graph_3)
-
-    def btn_send_pid_params(self):
-        k_p = self.uic.lineEdit_2.text()
-        k_i = self.uic.lineEdit_3.text()
-        k_d = self.uic.lineEdit_4.text()
-        pid = k_p+"/"+k_i+"/"+k_d
-
-        if self.serialCom is not None:
-            try:
-                self.serialCom.write(pid.encode())
-                print("Data send:", pid)
-                self.serial_monitor(pid)
-                #time.sleep(0.5)
-            except:
-                print("Failed to send data!")
-                self.serial_monitor("Failed to send data!")
 
     def btn_send_serial_monitor(self):
         data = self.uic.lineEdit.text()
