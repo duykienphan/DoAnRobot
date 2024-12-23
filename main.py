@@ -85,6 +85,8 @@ class MainWindow(QMainWindow):
         self.angle_1 = 0
         self.angle_2 = 0
 
+        self.csv_data = []
+
         self.uic.comboBox.addItems(self.PORT_LIST)
         self.uic.comboBox_2.addItems(["4800", "9600", "14400", "19200", "28800", "38400", "57600", "115200"])
         self.uic.comboBox_2.setCurrentText(str(self.BAUD_RATE))
@@ -105,8 +107,8 @@ class MainWindow(QMainWindow):
         self.uic.actionExit.triggered.connect(self.exit_application)
         self.uic.actionGraph_3.triggered.connect(self.hide_graph_3)
         self.uic.actionUnhide_All.triggered.connect(self.unhide_all)
-
-        self.csv_data = ""
+        self.uic.actionSave.triggered.connect(self.csv_save)
+        self.uic.actionSave_as.triggered.connect(self.csv_save)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_plot)
@@ -273,7 +275,7 @@ class MainWindow(QMainWindow):
     def handle_data_received(self, data):
         #print(data)
         self.serial_monitor(data)
-        self.csv_data = data
+        self.csv_data.append(data)
 
         try:
             values = data.split('/') 
