@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtCore import QThread, pyqtSignal, QObject, QTimer
 from gui import Ui_MainWindow
-import time
+import time, csv
 import serial.tools.list_ports
 import pyqtgraph as pg
 
@@ -42,7 +42,7 @@ class MainWindow(QMainWindow):
         self.uic.graphicsView.setBackground("w")
         self.curve = self.uic.graphicsView.plot(pen=pg.mkPen(color='r', width=2))
         self.curve_line2 = self.uic.graphicsView.plot(pen=pg.mkPen(color='b', width=2))
-        self.uic.graphicsView.setLabel('left', 'Value')
+        self.uic.graphicsView.setLabel('left', 'Angle (degree)')
         self.uic.graphicsView.setLabel('bottom', 'Time (ms)')
         legend = self.uic.graphicsView.addLegend()
         legend.addItem(self.curve, "Tín hiệu đặt")
@@ -51,10 +51,12 @@ class MainWindow(QMainWindow):
         # Đồ thị PyQtGraph 2
         self.uic.graphicsView_2.setBackground("w")
         self.curve_2 = self.uic.graphicsView_2.plot(pen=pg.mkPen(color='r', width=2))
-        self.uic.graphicsView_2.setLabel('left', 'Value')
+        self.curve_2_line2 = self.uic.graphicsView_2.plot(pen=pg.mkPen(color='b', width=2))
+        self.uic.graphicsView_2.setLabel('left', 'Angle (degree)')
         self.uic.graphicsView_2.setLabel('bottom', 'Time (ms)')
         legend_2 = self.uic.graphicsView_2.addLegend()
-        legend_2.addItem(self.curve_2, "Tín hiệu sai số")
+        legend_2.addItem(self.curve_2, "Tín hiệu đặt")
+        legend_2.addItem(self.curve_2_line2, "Tín hiệu thực tế")
 
         # Đồ thị PyQtGraph 3
         self.uic.graphicsView_3.setBackground("w")
@@ -63,6 +65,8 @@ class MainWindow(QMainWindow):
         self.uic.graphicsView_3.setLabel('bottom', 'Time (ms)')
         legend_3 = self.uic.graphicsView_3.addLegend()
         legend_3.addItem(self.curve_3, "Tín hiệu PID")
+        
+        self.hide_graph_3()
 
         self.COM_PORT = ""
         self.BAUD_RATE = 115200
@@ -71,11 +75,15 @@ class MainWindow(QMainWindow):
         self.data_graph = []
         self.data_graph_line2 = []
         self.data_graph_2 = []
+        self.data_graph_2_line2 = []
         self.data_graph_3 = []
         self.time_graph = []
         self.time_graph_2 = []
         self.time_graph_3 = []
         self.time_sent = 0
+
+        self.angle_1 = 0
+        self.angle_2 = 0
 
         self.uic.comboBox.addItems(self.PORT_LIST)
         self.uic.comboBox_2.addItems(["4800", "9600", "14400", "19200", "28800", "38400", "57600", "115200"])
@@ -95,9 +103,35 @@ class MainWindow(QMainWindow):
         self.uic.actionClear_Graph_3.triggered.connect(self.clear_graph_3)
         self.uic.actionClear_All.triggered.connect(self.clear_all)
         self.uic.actionExit.triggered.connect(self.exit_application)
+        self.uic.actionGraph_3.triggered.connect(self.hide_graph_3)
+        self.uic.actionUnhide_All.triggered.connect(self.unhide_all)
+
+        self.csv_data = ""
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_plot)
+
+    def csv_save(self):
+        file_name = time.strftime("data_%Y%m%d_%H%M%S.csv")
+        try:
+            with open(file_name, mode='w', newline='', encoding='utf-8') as file:
+                writer = csv.writer(file)
+                for row in self.csv_data:
+                    writer.writerow(row.split(','))
+            error_message = f"Data saved to {file_name} successfully."
+            print(error_message)
+            self.serial_monitor(error_message)
+        except Exception as e:
+            error_message = f"Error saving to CSV: {e}"
+            self.serial_monitor(error_message)
+
+    def hide_graph_3(self):
+        self.uic.label_10.setVisible(False)
+        self.uic.graphicsView_3.setVisible(False)
+
+    def unhide_all(self):
+        self.uic.label_10.setVisible(True)
+        self.uic.graphicsView_3.setVisible(True)
     
     def clear_graph_1(self):
         self.curve.clear()
@@ -110,7 +144,6 @@ class MainWindow(QMainWindow):
         self.curve_2.clear()
         self.data_graph_2 = []
         self.time_graph_2 = []
-
 
     def clear_graph_3(self):
         self.curve_3.clear()
@@ -142,8 +175,10 @@ class MainWindow(QMainWindow):
 
         if len(self.data_graph_2) > 100:
             self.data_graph_2.pop(0)
+            self.data_graph_2_line2.pop(0)
             self.time_graph_2.pop(0)
         self.curve_2.setData(self.time_graph_2, self.data_graph_2)
+        self.curve_2_line2.setData(self.time_graph_2, self.data_graph_2_line2)
 
         if len(self.data_graph_3) > 100:
             self.data_graph_3.pop(0)
@@ -151,10 +186,17 @@ class MainWindow(QMainWindow):
         self.curve_3.setData(self.time_graph_3, self.data_graph_3)
 
     def btn_send_pid_params(self):
-        k_p = self.uic.lineEdit_2.text()
-        k_i = self.uic.lineEdit_3.text()
-        k_d = self.uic.lineEdit_4.text()
-        pid = k_p+"/"+k_i+"/"+k_d
+        kp_1 = self.uic.lineEdit_2.text()
+        ki_1 = self.uic.lineEdit_3.text()
+        kd_1 = self.uic.lineEdit_4.text()
+        self.angle_1 = int(self.uic.lineEdit_8.text())*10
+
+        kp_2 = self.uic.lineEdit_5.text()
+        ki_2 = self.uic.lineEdit_6.text()
+        kd_2 = self.uic.lineEdit_7.text()
+        self.angle_2 = int(self.uic.lineEdit_9.text())*10
+
+        pid = kp_1+","+ki_1+","+kd_1+","+str(self.angle_1)+","+kp_2+","+ki_2+","+kd_2+","+str(self.angle_2)
 
         if self.serialCom is not None:
             try:
@@ -226,18 +268,21 @@ class MainWindow(QMainWindow):
             self.serial_monitor("Serial port closed.")
         self.timer.stop()
         self.time_sent = 0
-        self.uic.label_13.setText("N/A")
+        self.uic.label_13.setText("N,A")
 
     def handle_data_received(self, data):
         #print(data)
         self.serial_monitor(data)
+        self.csv_data = data
 
         try:
             values = data.split('/') 
-            if len(values) == 4:
-                self.data_graph.append(int(values[0]))
-                self.data_graph_line2.append(int(values[1]))
-                self.data_graph_2.append(int(values[2]))
+
+            if len(values) == 8:
+                self.data_graph.append(int(self.angle_1)/10)
+                self.data_graph_line2.append((float(values[0]))/182)
+                self.data_graph_2.append(int(self.angle_2)/10)
+                self.data_graph_2_line2.append(float(values[4])/182)
                 self.data_graph_3.append(int(values[3]))
                 self.time_sent += 50 # Thời gian delay trên vi điều khiển
                 self.time_graph.append(self.time_sent)
