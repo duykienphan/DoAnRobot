@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtCore import QThread, pyqtSignal, QObject, QTimer
+from PyQt5 import QtGui
 from gui import Ui_MainWindow
 import time, csv
 import serial.tools.list_ports
@@ -66,8 +67,6 @@ class MainWindow(QMainWindow):
         legend_3 = self.uic.graphicsView_3.addLegend()
         legend_3.addItem(self.curve_3, "Tín hiệu PID")
         
-        self.hide_graph_3()
-
         self.COM_PORT = ""
         self.BAUD_RATE = 115200
         self.PORT_LIST, self.DRIVER_LIST = self.esp.get_com_port()
@@ -82,8 +81,17 @@ class MainWindow(QMainWindow):
         self.time_graph_3 = []
         self.time_sent = 0
 
-        self.angle_1 = 0
-        self.angle_2 = 0
+        self.angle_1 = ""
+        self.angle_2 = ""
+
+        self.position_1 = 0
+        self.torque_1 = 0
+        self.speed_1 = 0
+        self.temp_1 = 0
+        self.position_1 = 0
+        self.torque_2 = 0
+        self.speed_2 = 0
+        self.temp_2 = 0
 
         self.csv_data = []
 
@@ -91,12 +99,17 @@ class MainWindow(QMainWindow):
         self.uic.comboBox_2.addItems(["4800", "9600", "14400", "19200", "28800", "38400", "57600", "115200"])
         self.uic.comboBox_2.setCurrentText(str(self.BAUD_RATE))
 
+        self.uic.comboBox_3.addItems(["Hình sin", "Point to point", "Triangle", "Circle"])
+        self.uic.comboBox_3.setCurrentText("Hình sin")
+
         self.uic.pushButton_6.clicked.connect(self.btn_refresh)
         self.uic.pushButton_3.clicked.connect(self.btn_connect)
         self.uic.pushButton_4.clicked.connect(self.btn_disconnect)
         self.uic.pushButton_5.clicked.connect(self.btn_send_pid_params)
         self.uic.pushButton.clicked.connect(self.btn_send_serial_monitor)
         self.uic.pushButton_2.clicked.connect(self.btn_clear_serial_monitor)
+        self.uic.pushButton_8.clicked.connect(self.trajector_planning_start)
+        self.uic.pushButton_9.clicked.connect(self.trajector_planning_stop)
 
         self.uic.actionOpen.triggered.connect(self.open_serial_monitor)
         self.uic.actionClose.triggered.connect(self.close_serial_monitor)
@@ -109,63 +122,27 @@ class MainWindow(QMainWindow):
         self.uic.actionUnhide_All.triggered.connect(self.unhide_all)
         self.uic.actionSave.triggered.connect(self.csv_save)
         self.uic.actionSave_as.triggered.connect(self.csv_save)
+        self.uic.actionController.triggered.connect(self.show_page)
+        self.uic.actionIndentification.triggered.connect(self.show_page_2)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_plot)
 
-    def csv_save(self):
-        file_name = time.strftime("data_%Y%m%d_%H%M%S.csv")
-        try:
-            with open(file_name, mode='w', newline='', encoding='utf-8') as file:
-                writer = csv.writer(file)
-                for row in self.csv_data:
-                    writer.writerow(row.split(','))
-            error_message = f"Data saved to {file_name} successfully."
-            print(error_message)
-            self.serial_monitor(error_message)
-        except Exception as e:
-            error_message = f"Error saving to CSV: {e}"
-            self.serial_monitor(error_message)
+        self.uic.stackedWidget.setCurrentWidget(self.uic.page)
 
-    def hide_graph_3(self):
-        self.uic.label_10.setVisible(False)
-        self.uic.graphicsView_3.setVisible(False)
+########################################## Page 1 #################################################
+    def trajector_planning_start(self):
+        self.uic.comboBox_3.setStyleSheet("QComboBox"
+                                     "{"
+                                     "background-color: lightgreen;"
+                                     "}")
 
-    def unhide_all(self):
-        self.uic.label_10.setVisible(True)
-        self.uic.graphicsView_3.setVisible(True)
+    def trajector_planning_stop(self):
+        self.uic.comboBox_3.setStyleSheet("QComboBox"
+                                     "{"
+                                     "background-color: light gray;"
+                                     "}")
     
-    def clear_graph_1(self):
-        self.curve.clear()
-        self.curve_line2.clear()
-        self.data_graph = []
-        self.data_graph_line2 = []
-        self.time_graph = []
-
-    def clear_graph_2(self):
-        self.curve_2.clear()
-        self.data_graph_2 = []
-        self.time_graph_2 = []
-
-    def clear_graph_3(self):
-        self.curve_3.clear()
-        self.data_graph_3 = []
-        self.time_graph_3 = []
-
-    def clear_all(self):
-        self.curve.clear()
-        self.curve_line2.clear()
-        self.curve_2.clear()
-        self.curve_3.clear()
-
-        self.data_graph = []
-        self.data_graph_line2 = []
-        self.data_graph_2 = []
-        self.data_graph_3 = []
-        self.time_graph = []
-        self.time_graph_2 = []
-        self.time_graph_3 = []
-
     def update_plot(self):
         if len(self.data_graph) > 100:
             self.data_graph.pop(0)
@@ -270,7 +247,7 @@ class MainWindow(QMainWindow):
             self.serial_monitor("Serial port closed.")
         self.timer.stop()
         self.time_sent = 0
-        self.uic.label_13.setText("N,A")
+        self.uic.label_13.setText("N/A")
 
     def handle_data_received(self, data):
         #print(data)
@@ -281,11 +258,20 @@ class MainWindow(QMainWindow):
             values = data.split('/') 
 
             if len(values) == 8:
+                self.position_1 = int(values[0])
+                self.torque_1 = int(values[1])
+                self.speed_1 = int(values[2])
+                self.temp_1 = int(values[3])
+                self.position_2 = int(values[4])
+                self.torque_2 = int(values[5])
+                self.speed_2 = int(values[6])
+                self.temp_2 = int(values[7])
+
                 self.data_graph.append(int(self.angle_1)/10)
-                self.data_graph_line2.append((float(values[0]))/182)
+                self.data_graph_line2.append(self.position_1/182)
                 self.data_graph_2.append(int(self.angle_2)/10)
-                self.data_graph_2_line2.append(float(values[4])/182)
-                self.data_graph_3.append(int(values[3]))
+                self.data_graph_2_line2.append(self.position_2/182)
+                self.data_graph_3.append(0)
                 self.time_sent += 50 # Thời gian delay trên vi điều khiển
                 self.time_graph.append(self.time_sent)
                 self.time_graph_2.append(self.time_sent)
@@ -297,6 +283,75 @@ class MainWindow(QMainWindow):
         except:
             print("Error parsing data")
             self.serial_monitor("Error parsing data")
+###################################################################################################
+
+########################################## Page 2 #################################################
+
+###################################################################################################
+
+######################################### Menu Bar ################################################
+    def show_page(self):
+        self.uic.stackedWidget.setCurrentWidget(self.uic.page)
+    
+    def show_page_2(self):
+        self.uic.stackedWidget.setCurrentWidget(self.uic.page_2)
+
+    def csv_save(self):
+        file_name = time.strftime("data_%Y%m%d_%H%M%S.csv")
+        try:
+            with open(file_name, mode='w', newline='', encoding='utf-8') as file:
+                writer = csv.writer(file)
+                for row in self.csv_data:
+                    writer.writerow(row.split(','))
+            error_message = f"Data saved to {file_name} successfully."
+            print(error_message)
+            self.serial_monitor(error_message)
+        except Exception as e:
+            error_message = f"Error saving to CSV: {e}"
+            self.serial_monitor(error_message)
+
+    def hide_graph_3(self):
+        self.uic.label_10.setVisible(False)
+        self.uic.graphicsView_3.setVisible(False)
+
+    def unhide_all(self):
+        self.uic.label_10.setVisible(True)
+        self.uic.graphicsView_3.setVisible(True)
+    
+    def clear_graph_1(self):
+        self.curve.clear()
+        self.curve_line2.clear()
+        self.data_graph = []
+        self.data_graph_line2 = []
+        self.time_graph = []
+
+    def clear_graph_2(self):
+        self.curve_2.clear()
+        self.data_graph_2 = []
+        self.time_graph_2 = []
+
+    def clear_graph_3(self):
+        self.curve_3.clear()
+        self.data_graph_3 = []
+        self.time_graph_3 = []
+
+    def clear_all(self):
+        self.curve.clear()
+        self.curve_line2.clear()
+        self.curve_2.clear()
+        self.curve_3.clear()
+
+        self.data_graph = []
+        self.data_graph_line2 = []
+        self.data_graph_2 = []
+        self.data_graph_3 = []
+        self.time_graph = []
+        self.time_graph_2 = []
+        self.time_graph_3 = []
+
+    def serial_monitor(self, text):
+        display_text = str(time.strftime("%H:%M:%S", time.localtime())) + " -> " + text
+        self.uic.textEdit.append(display_text)
     
     def open_serial_monitor(self):
         self.uic.groupBox.setVisible(True)
@@ -304,15 +359,12 @@ class MainWindow(QMainWindow):
     def close_serial_monitor(self):
         self.uic.groupBox.setVisible(False)
 
-    def serial_monitor(self, text):
-        display_text = str(time.strftime("%H:%M:%S", time.localtime())) + " -> " + text
-        self.uic.textEdit.append(display_text)
-
     def show(self):
         self.main_win.show()
 
     def exit_application(self):
         QApplication.quit()
+###################################################################################################
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
