@@ -53,7 +53,7 @@ class MainWindow(QMainWindow):
         self.uic.graphicsView_2.setBackground("w")
         self.curve_2 = self.uic.graphicsView_2.plot(pen=pg.mkPen(color='r', width=2))
         self.curve_2_line2 = self.uic.graphicsView_2.plot(pen=pg.mkPen(color='b', width=2))
-        self.uic.graphicsView_2.setLabel('left', 'Angle (degree)')
+        self.uic.graphicsView_2.setLabel('left', 'Force (Nm)')
         self.uic.graphicsView_2.setLabel('bottom', 'Time (ms)')
         legend_2 = self.uic.graphicsView_2.addLegend()
         legend_2.addItem(self.curve_2, "Tín hiệu đặt")
@@ -62,10 +62,82 @@ class MainWindow(QMainWindow):
         # Đồ thị PyQtGraph 3
         self.uic.graphicsView_3.setBackground("w")
         self.curve_3 = self.uic.graphicsView_3.plot(pen=pg.mkPen(color='r', width=2))
-        self.uic.graphicsView_3.setLabel('left', 'Value')
+        self.curve_3_line2 = self.uic.graphicsView_3.plot(pen=pg.mkPen(color='b', width=2))
+        self.uic.graphicsView_3.setLabel('left', 'Angle (degree)')
         self.uic.graphicsView_3.setLabel('bottom', 'Time (ms)')
         legend_3 = self.uic.graphicsView_3.addLegend()
-        legend_3.addItem(self.curve_3, "Tín hiệu PID")
+        legend_3.addItem(self.curve_3, "Tín hiệu đặt")
+        legend_3.addItem(self.curve_3_line2, "Tín hiệu thực tế")
+
+        # Đồ thị PyQtGraph 4
+        self.uic.graphicsView_8.setBackground("w")
+        self.curve_4 = self.uic.graphicsView_8.plot(pen=pg.mkPen(color='r', width=2))
+        self.curve_4_line2 = self.uic.graphicsView_8.plot(pen=pg.mkPen(color='b', width=2))
+        self.uic.graphicsView_8.setLabel('left', 'Force (Nm)')
+        self.uic.graphicsView_8.setLabel('bottom', 'Time (ms)')
+        legend_4 = self.uic.graphicsView_8.addLegend()
+        legend_4.addItem(self.curve_4, "Tín hiệu đặt")
+        legend_4.addItem(self.curve_4_line2, "Tín hiệu thực tế")
+
+        # Đồ thị 5
+        self.uic.graphicsView_4.setBackground("w")
+        self.curve_5 = self.uic.graphicsView_4.plot(pen=pg.mkPen(color='r', width=2))
+        self.curve_5_line2 = self.uic.graphicsView_4.plot(pen=pg.mkPen(color='b', width=2))
+        self.uic.graphicsView_4.setLabel('left', 'Distance (m)')
+        self.uic.graphicsView_4.setLabel('bottom', 'Time (ms)')
+        legend_5 = self.uic.graphicsView_4.addLegend()
+        legend_5.addItem(self.curve_5, "Tín hiệu đặt")
+        legend_5.addItem(self.curve_5_line2, "Tín hiệu thực tế")
+
+        # Đồ thị 6
+        self.uic.graphicsView_5.setBackground("w")
+        self.curve_6 = self.uic.graphicsView_5.plot(pen=pg.mkPen(color='r', width=2))
+        self.curve_6_line2 = self.uic.graphicsView_5.plot(pen=pg.mkPen(color='b', width=2))
+        self.uic.graphicsView_5.setLabel('left', 'Distance (m)')
+        self.uic.graphicsView_5.setLabel('bottom', 'Time (ms)')
+        legend_6 = self.uic.graphicsView_5.addLegend()
+        legend_6.addItem(self.curve_6, "Tín hiệu đặt")
+        legend_6.addItem(self.curve_6_line2, "Tín hiệu thực tế")
+
+        # Đồ thị 7
+        self.uic.graphicsView_6.setBackground("w")
+        self.curve_7 = self.uic.graphicsView_6.plot(pen=pg.mkPen(color='r', width=2))
+        self.curve_7_line2 = self.uic.graphicsView_6.plot(pen=pg.mkPen(color='b', width=2))
+        self.uic.graphicsView_6.setLabel('left', 'Distance (m)')
+        self.uic.graphicsView_6.setLabel('bottom', 'Time (ms)')
+        legend_7 = self.uic.graphicsView_6.addLegend()
+        legend_7.addItem(self.curve_7, "Tín hiệu đặt")
+        legend_7.addItem(self.curve_7_line2, "Tín hiệu thực tế")
+
+        # Đồ thị 8
+        self.uic.graphicsView_7.setBackground("w")
+        self.curve_8 = self.uic.graphicsView_7.plot(pen=pg.mkPen(color='r', width=2))
+        self.curve_8_line2 = self.uic.graphicsView_7.plot(pen=pg.mkPen(color='b', width=2))
+        self.uic.graphicsView_7.setLabel('left', 'Distance (m)')
+        self.uic.graphicsView_7.setLabel('bottom', 'Time (ms)')
+        legend_8 = self.uic.graphicsView_7.addLegend()
+        legend_8.addItem(self.curve_8, "Tín hiệu đặt")
+        legend_8.addItem(self.curve_8_line2, "Tín hiệu thực tế")
+
+        # Đồ thị 9
+        self.uic.graphicsView_12.setBackground("w")
+        self.curve_9 = self.uic.graphicsView_12.plot(pen=pg.mkPen(color='r', width=2))
+        self.curve_9_line2 = self.uic.graphicsView_12.plot(pen=pg.mkPen(color='b', width=2))
+        self.uic.graphicsView_12.setLabel('left', 'Value')
+        self.uic.graphicsView_12.setLabel('bottom', 'Time (ms)')
+        legend_9 = self.uic.graphicsView_12.addLegend()
+        legend_9.addItem(self.curve_9, "Tín hiệu đặt")
+        legend_9.addItem(self.curve_9_line2, "Tín hiệu thực tế")
+
+        # Đồ thị 10
+        self.uic.graphicsView_13.setBackground("w")
+        self.curve_10 = self.uic.graphicsView_13.plot(pen=pg.mkPen(color='r', width=2))
+        self.curve_10_line2 = self.uic.graphicsView_13.plot(pen=pg.mkPen(color='b', width=2))
+        self.uic.graphicsView_13.setLabel('left', 'Value')
+        self.uic.graphicsView_13.setLabel('bottom', 'Time (ms)')
+        legend_10 = self.uic.graphicsView_13.addLegend()
+        legend_10.addItem(self.curve_10, "Tín hiệu đặt")
+        legend_10.addItem(self.curve_10_line2, "Tín hiệu thực tế")
         
         self.COM_PORT = ""
         self.BAUD_RATE = 115200
@@ -76,10 +148,30 @@ class MainWindow(QMainWindow):
         self.data_graph_2 = []
         self.data_graph_2_line2 = []
         self.data_graph_3 = []
+        self.data_graph_3_line2 = []
+        self.data_graph_4 = []
+        self.data_graph_4_line2 = []
+        self.data_graph_5 = []
+        self.data_graph_5_line2 = []
+        self.data_graph_6 = []
+        self.data_graph_6_line2 = []
+        self.data_graph_7 = []
+        self.data_graph_7_line2 = []
+        self.data_graph_8 = []
+        self.data_graph_8_line2 = []
+        self.data_graph_9 = []
+        self.data_graph_9_line2 = []
+
         self.time_graph = []
         self.time_graph_2 = []
         self.time_graph_3 = []
-        self.time_sent = 0
+        self.time_graph_4 = []
+        self.time_graph_5 = []
+        self.time_graph_6 = []
+        self.time_graph_7 = []
+        self.time_graph_8 = []
+        self.time_graph_9 = []
+        self.mcu_process_time = 0
 
         self.angle_1 = ""
         self.angle_2 = ""
@@ -161,8 +253,29 @@ class MainWindow(QMainWindow):
 
         if len(self.data_graph_3) > 100:
             self.data_graph_3.pop(0)
+            self.data_graph_3_line2.pop(0)
             self.time_graph_3.pop(0)
         self.curve_3.setData(self.time_graph_3, self.data_graph_3)
+        self.curve_3_line2.setData(self.time_graph_3, self.data_graph_3_line2)
+
+        if len(self.data_graph_4) > 100:
+            self.data_graph_4.pop(0)
+            self.data_graph_4_line2.pop(0)
+            self.time_graph_4.pop(0)
+        self.curve_4.setData(self.time_graph_4, self.data_graph_4)
+        self.curve_4_line2.setData(self.time_graph_4, self.data_graph_3_line2)
+
+        self.mcu_params_display()
+
+    def mcu_params_display(self):
+        self.uic.lineEdit_10.setText(self.position_1)
+        self.uic.lineEdit_11.setText(self.torque_1)
+        self.uic.lineEdit_12.setText(self.speed_1)
+        self.uic.lineEdit_13.setText(self.temp_1)
+        self.uic.lineEdit_14.setText(self.position_2)
+        self.uic.lineEdit_15.setText(self.torque_2)
+        self.uic.lineEdit_16.setText(self.speed_2)
+        self.uic.lineEdit_17.setText(self.temp_2)
 
     def btn_send_pid_params(self):
         kp_1 = self.uic.lineEdit_2.text()
@@ -246,7 +359,7 @@ class MainWindow(QMainWindow):
             print("Serial port closed.")
             self.serial_monitor("Serial port closed.")
         self.timer.stop()
-        self.time_sent = 0
+        self.mcu_process_time = 0
         self.uic.label_13.setText("N/A")
 
     def handle_data_received(self, data):
@@ -269,13 +382,18 @@ class MainWindow(QMainWindow):
 
                 self.data_graph.append(int(self.angle_1)/10)
                 self.data_graph_line2.append(self.position_1/182)
-                self.data_graph_2.append(int(self.angle_2)/10)
-                self.data_graph_2_line2.append(self.position_2/182)
-                self.data_graph_3.append(0)
-                self.time_sent += 50 # Thời gian delay trên vi điều khiển
-                self.time_graph.append(self.time_sent)
-                self.time_graph_2.append(self.time_sent)
-                self.time_graph_3.append(self.time_sent)
+                self.data_graph_2.append(0)
+                self.data_graph_2_line2.append(int(self.torque_1))
+                self.data_graph_3.append(int(self.angle_2)/10)
+                self.data_graph_3_line2.append(self.position_2/182)
+                self.data_graph_4.append(0)
+                self.data_graph_4_line2.append(int(self.torque_2))
+
+                self.mcu_process_time += 0.02 # Thời gian delay trên vi điều khiển (ms)
+                self.time_graph.append(self.mcu_process_time)
+                self.time_graph_2.append(self.mcu_process_time)
+                self.time_graph_3.append(self.mcu_process_time)
+                self.time_graph_4.append(self.mcu_process_time)
                 #print(values)
             else:
                 print("Error: Invalid data format")
