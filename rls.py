@@ -3,9 +3,10 @@ import numpy as np
 
 class RLS:
     def __init__(self):
+        self.error = 1e-5
         self.pre_speed_1 = 0
         self.pre_speed_2 = 0
-        self.R_p = np.zeros((8, 8))
+        self.R_p = np.zeros((8, 8)) + self.error
         self.theta_p = np.zeros(8)    
         self.count = 0
 

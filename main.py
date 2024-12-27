@@ -4,10 +4,12 @@ from PyQt5.QtCore import QThread, pyqtSignal, QObject, QTimer
 from PyQt5 import QtGui
 from gui import Ui_MainWindow
 import time, csv
+from threading import Thread
 import serial.tools.list_ports
 import pyqtgraph as pg
 
 from esp import ESP
+from trajector_planning import Trajector
 
 class SerialReceiverThread(QThread):
     # Tín hiệu để gửi dữ liệu nhận được từ luồng đến giao diện chính
@@ -38,6 +40,7 @@ class MainWindow(QMainWindow):
         self.uic = Ui_MainWindow()
         self.uic.setupUi(self.main_win)
         self.esp = ESP()
+        self.TP = Trajector()
 
         # Đồ thị PyQtGraph 1
         self.uic.graphicsView.setBackground("w")
@@ -173,31 +176,43 @@ class MainWindow(QMainWindow):
         self.time_graph_9 = []
         self.mcu_process_time = 0
 
-        self.angle_1 = ""
-        self.angle_2 = ""
+        self.angle_1 = 0
+        self.angle_2 = 0
 
         self.position_1 = 0
         self.torque_1 = 0
         self.speed_1 = 0
+        self.position_set_1 = 0
         self.temp_1 = 0
+        self.torque_pid_1 = 0
         self.position_1 = 0
         self.torque_2 = 0
         self.speed_2 = 0
+        self.position_set_2 = 0
         self.temp_2 = 0
+        self.torque_pid_2 = 0
 
         self.csv_data = []
+
+        # Threading
+        self.is_running = False
+
+        # Quy hoạch quỹ đạo
+        self.point2point_lst = self.TP.point2point_operate()
+        self.triangle_lst = self.TP.traingle_operate()
 
         self.uic.comboBox.addItems(self.PORT_LIST)
         self.uic.comboBox_2.addItems(["4800", "9600", "14400", "19200", "28800", "38400", "57600", "115200"])
         self.uic.comboBox_2.setCurrentText(str(self.BAUD_RATE))
 
-        self.uic.comboBox_3.addItems(["Hình sin", "Point to point", "Triangle", "Circle"])
-        self.uic.comboBox_3.setCurrentText("Hình sin")
+        self.trajectory_lst = ["Point to point", "Triangle"]
+        self.uic.comboBox_3.addItems(self.trajectory_lst)
+        self.uic.comboBox_3.setCurrentText(self.trajectory_lst[0])
 
         self.uic.pushButton_6.clicked.connect(self.btn_refresh)
         self.uic.pushButton_3.clicked.connect(self.btn_connect)
         self.uic.pushButton_4.clicked.connect(self.btn_disconnect)
-        self.uic.pushButton_5.clicked.connect(self.btn_send_pid_params)
+        self.uic.pushButton_7.clicked.connect(self.btn_send_pid_params)
         self.uic.pushButton.clicked.connect(self.btn_send_serial_monitor)
         self.uic.pushButton_2.clicked.connect(self.btn_clear_serial_monitor)
         self.uic.pushButton_8.clicked.connect(self.trajector_planning_start)
@@ -228,12 +243,54 @@ class MainWindow(QMainWindow):
                                      "{"
                                      "background-color: lightgreen;"
                                      "}")
+        self.is_running = True
+        try:
+            self.thread1 = Thread(target=self.trajector_planning_operate)
+            self.thread1.daemon = True
+            self.thread1.start()
+        except:
+            print("Trajectory planning thread error")
+            self.serial_monitor("Trajectory planning thread error")
 
     def trajector_planning_stop(self):
         self.uic.comboBox_3.setStyleSheet("QComboBox"
                                      "{"
                                      "background-color: light gray;"
                                      "}")
+        self.is_running = False
+        if self.thread1 is not None:
+            self.thread1.join()  # Wait for the thread to finish
+        
+    def trajector_planning_operate(self):
+        while self.is_running:
+            kp_1 = self.uic.lineEdit_2.text()
+            ki_1 = self.uic.lineEdit_3.text()
+            kd_1 = self.uic.lineEdit_4.text()
+
+            kp_2 = self.uic.lineEdit_5.text()
+            ki_2 = self.uic.lineEdit_6.text()
+            kd_2 = self.uic.lineEdit_7.text()
+
+            for i in range(len(self.point2point_lst)):
+                if self.uic.comboBox_3.currentText() == self.trajectory_lst[0]:
+                    self.angle_2 = self.point2point_lst[i][1]*10
+                    self.angle_1 = self.point2point_lst[i][0]*10
+                elif self.uic.comboBox_3.currentText() == self.trajectory_lst[1]:
+                    self.angle_2 = self.triangle_lst[i][1]*10
+                    self.angle_1 = self.triangle_lst[i][0]*10
+
+                pid = kp_1+","+ki_1+","+kd_1+","+str(self.angle_1)+","+kp_2+","+ki_2+","+kd_2+","+str(self.angle_2)
+
+                if self.serialCom is not None:
+                    try:
+                        self.serialCom.write(pid.encode())
+                        time.sleep(0.02)
+                        print("Data send:", pid)
+                        self.serial_monitor(pid)
+                        #time.sleep(0.5)
+                    except:
+                        print("Failed to send data!")
+                        self.serial_monitor("Failed to send data!")
     
     def update_plot(self):
         if len(self.data_graph) > 100:
@@ -263,19 +320,9 @@ class MainWindow(QMainWindow):
             self.data_graph_4_line2.pop(0)
             self.time_graph_4.pop(0)
         self.curve_4.setData(self.time_graph_4, self.data_graph_4)
-        self.curve_4_line2.setData(self.time_graph_4, self.data_graph_3_line2)
+        self.curve_4_line2.setData(self.time_graph_4, self.data_graph_4_line2)
 
         self.mcu_params_display()
-
-    def mcu_params_display(self):
-        self.uic.lineEdit_10.setText(self.position_1)
-        self.uic.lineEdit_11.setText(self.torque_1)
-        self.uic.lineEdit_12.setText(self.speed_1)
-        self.uic.lineEdit_13.setText(self.temp_1)
-        self.uic.lineEdit_14.setText(self.position_2)
-        self.uic.lineEdit_15.setText(self.torque_2)
-        self.uic.lineEdit_16.setText(self.speed_2)
-        self.uic.lineEdit_17.setText(self.temp_2)
 
     def btn_send_pid_params(self):
         kp_1 = self.uic.lineEdit_2.text()
@@ -367,44 +414,57 @@ class MainWindow(QMainWindow):
         self.serial_monitor(data)
         self.csv_data.append(data)
 
-        try:
-            values = data.split('/') 
+        #try:
+        values = data.split('/') 
+        #print(values, len(values))
 
-            if len(values) == 8:
-                self.position_1 = int(values[0])
-                self.torque_1 = int(values[1])
-                self.speed_1 = int(values[2])
-                self.temp_1 = int(values[3])
-                self.position_2 = int(values[4])
-                self.torque_2 = int(values[5])
-                self.speed_2 = int(values[6])
-                self.temp_2 = int(values[7])
+        if len(values) == 10:
+            self.position_1 = float(values[0])/182
+            self.torque_1 = int(values[1])
+            self.speed_1 = int(values[2])
+            self.torque_pid_1 = int(values[3])
+            self.position_set_1 = int(values[4])
+            self.temp_1 = int(values[5])
+            self.position_2 = float(values[6])/182
+            self.torque_2 = int(values[7])
+            self.speed_2 = int(values[8])
+            self.torque_pid_2 = int(values[8])
+            self.position_set_1 = int(values[9])
+            self.temp_2 = int(values[10])
 
-                self.data_graph.append(int(self.angle_1)/10)
-                self.data_graph_line2.append(self.position_1/182)
-                self.data_graph_2.append(0)
-                self.data_graph_2_line2.append(int(self.torque_1))
-                self.data_graph_3.append(int(self.angle_2)/10)
-                self.data_graph_3_line2.append(self.position_2/182)
-                self.data_graph_4.append(0)
-                self.data_graph_4_line2.append(int(self.torque_2))
+            self.data_graph.append(int(self.angle_1)/10)
+            self.data_graph_line2.append(self.position_1)
+            self.data_graph_2.append(self.torque_pid_1)
+            self.data_graph_2_line2.append(int(self.torque_1))
+            self.data_graph_3.append(int(self.angle_2)/10)
+            self.data_graph_3_line2.append(self.position_2)
+            self.data_graph_4.append(self.torque_pid_2)
+            self.data_graph_4_line2.append(int(self.torque_2))
 
-                self.mcu_process_time += 0.02 # Thời gian delay trên vi điều khiển (ms)
-                self.time_graph.append(self.mcu_process_time)
-                self.time_graph_2.append(self.mcu_process_time)
-                self.time_graph_3.append(self.mcu_process_time)
-                self.time_graph_4.append(self.mcu_process_time)
-                #print(values)
-            else:
-                print("Error: Invalid data format")
-                self.serial_monitor("Error: Invalid data format")
-        except:
-            print("Error parsing data")
-            self.serial_monitor("Error parsing data")
+            self.mcu_process_time += 0.02 # Thời gian delay trên vi điều khiển (ms)
+            self.time_graph.append(self.mcu_process_time)
+            self.time_graph_2.append(self.mcu_process_time)
+            self.time_graph_3.append(self.mcu_process_time)
+            self.time_graph_4.append(self.mcu_process_time)
+            #print(values)
+        else:
+            print("Error: Invalid data format")
+            self.serial_monitor("Error: Invalid data format")
+        #except:
+        #    print("Error parsing data")
+        #    self.serial_monitor("Error parsing data")
 ###################################################################################################
 
 ########################################## Page 2 #################################################
-
+    def mcu_params_display(self):
+        self.uic.lineEdit_10.setText(str(round(self.position_1, 0)))
+        self.uic.lineEdit_11.setText(str(self.torque_1))
+        self.uic.lineEdit_12.setText(str(self.speed_1))
+        self.uic.lineEdit_13.setText(str(self.temp_1))
+        self.uic.lineEdit_14.setText(str(round(self.position_2, 0)))
+        self.uic.lineEdit_15.setText(str(self.torque_2))
+        self.uic.lineEdit_16.setText(str(self.speed_2))
+        self.uic.lineEdit_17.setText(str(self.temp_2))
 ###################################################################################################
 
 ######################################### Menu Bar ################################################
@@ -478,7 +538,7 @@ class MainWindow(QMainWindow):
         self.uic.groupBox.setVisible(False)
 
     def show(self):
-        self.main_win.show()
+        self.main_win.showMaximized()
 
     def exit_application(self):
         QApplication.quit()

@@ -4,17 +4,19 @@ Quy hoạch quỹ đạo 2 điểm xy. Trong mô hình thực tế xy = xz
 
 import numpy as np
 import math
+from inverse_kinematic import Inverse_Kinematic
 
 class Trajector:
     def __init__(self):
-        pass
+        self.IK = Inverse_Kinematic()
+        self.list_coordinate = []
 
-    def point2point_formular(self, t, t_start, t_end, x_start, y_start, vx_start, vy_start, x_end, y_end, vx_end, vy_end):        
+    def point2point_formular(self, t, t_start, t_end, x_start, y_start, vx_start, vy_start, x_end, y_end, vx_end, vy_end):       
         # Ma trận hệ số cho đa thức bậc ba
         A = np.array([[1, t_start, t_start**2, t_start**3],
-                     [0, 1, 2*t_start, 3*(t_start**2)],
-                     [1, t_end, t_end**2, t_end**3],
-                     [0, 1, 2*t_end, 3*(t_end**2)]])
+                    [0, 1, 2*t_start, 3*(t_start**2)],
+                    [1, t_end, t_end**2, t_end**3],
+                    [0, 1, 2*t_end, 3*(t_end**2)]])
         
         # Giải hệ số x
         MX = np.array([x_start, vx_start, x_end, vx_end])
@@ -30,45 +32,100 @@ class Trajector:
 
         return x, y
     
-    def point2point_operate(self):
+    def point2point_operate(self, t_time=6, cycle=0.02): # t_time: Thời gian chạy
         ta = 0
-        xa = 13
+        xa = 20
         ya = 40
         vxa = 0
         vya = 0
 
         tb = 3
-        xb = -13
+        xb = -20
         yb = 40
         vxb = 0
         vyb = 0
 
         tc = 6
-        xc = 13
+        xc = 20
         yc = 40
         vxc = 0
         vyc = 0
 
-        t = 0.02
-
+        t = 0
         loop_duration = tc
+        loop_time = t % loop_duration # Thời gian lặp. Thgian nhap = 20s
 
-        loop_time = t % loop_duration # Thời gian lặp
+        while t <= t_time:
+            if loop_time < ta:
+                # Nếu thời gian trước điểm A, robot đứng tại A
+                x = xa
+                y = ya
+            elif loop_time <= tb:
+                # Đoạn A đến B: Tính vị trí sử dụng phương trình bậc ba
+                x, y = self.point2point_formular(loop_time, ta, tb, xa, ya, vxa, vya, xb, yb, vxb, vyb)
+            elif loop_time <= tc:
+                x, y = self.point2point_formular(loop_time, tb, tc, xb, yb, vxb, vyb, xc, yc, vxc, vyc)
 
-        if loop_time < ta:
-            # Nếu thời gian trước điểm A, robot đứng tại A
-            x = xa
-            y = ya
-        elif loop_time <= tb:
-            # Đoạn A đến B: Tính vị trí sử dụng phương trình bậc ba
-            x, y = self.point2point_formular(loop_time, ta, tb, xa, ya, vxa, vya, xb, yb, vxb, vyb)
-        elif loop_time <= tc:
-            x, y = self.point2point_formular(loop_time, tb, tc, xb, yb, vxb, vyb, xc, yc, vxc, vyc)
+            x, y = round(x, 2), round(y, 2)
+            t += cycle
+            loop_time = t % loop_duration
+            angle_x, angle_y = self.IK.IK_2DOF(x, 0, y, 2)
+            self.list_coordinate.append((self.IK.rad2deg(angle_x), self.IK.rad2deg(angle_y)))
+        return self.list_coordinate
 
-        x, y = round(x, 2), round(y, 2)
-        return x, y
+    def traingle_operate(self, t_time=9, cycle=0.02):
+        ta = 0
+        xa = 20
+        ya = 40
+        vxa = 0
+        vya = 0
 
+        tb = 3
+        xb = -20
+        yb = 40
+        vxb = 0
+        vyb = 0
+
+        tc = 6
+        xc = 20
+        yc = 40
+        vxc = 0
+        vyc = 0
+
+        td = 9
+        xd = 10
+        yd = 20
+        vxd = 0
+        vyd = 0
+
+        t = 0
+        loop_duration = tc
+        loop_time = t % loop_duration # Thời gian lặp. Thgian nhap = 20s
+
+        while t <= t_time:
+            if loop_time < ta:
+                # Nếu thời gian trước điểm A, robot đứng tại A
+                x = xa
+                y = ya
+            elif loop_time <= tb:
+                # Đoạn A đến B: Tính vị trí sử dụng phương trình bậc ba
+                x, y = self.point2point_formular(loop_time, ta, tb, xa, ya, vxa, vya, xb, yb, vxb, vyb)
+            elif loop_time <= tc:
+                x, y = self.point2point_formular(loop_time, tb, tc, xb, yb, vxb, vyb, xc, yc, vxc, vyc)
+            else:
+                x = xd
+                y = yd
+
+            x, y = round(x, 2), round(y, 2)
+            t += cycle
+            loop_time = t % loop_duration
+            angle_x, angle_y = self.IK.IK_2DOF(x, 0, y, 2)
+            self.list_coordinate.append((self.IK.rad2deg(angle_x), self.IK.rad2deg(angle_y)))
+        return self.list_coordinate
+    
 if __name__ == "__main__":
     TP = Trajector()
-    x, y = TP.point2point_operate()
-    print(x, y)
+    lst = TP.point2point_operate()
+    for i in range(len(lst)):
+        print(lst[i][0], lst[i][1])
+
