@@ -285,8 +285,8 @@ class MainWindow(QMainWindow):
                     try:
                         self.serialCom.write(pid.encode())
                         time.sleep(0.02)
-                        print("Data send:", pid)
-                        self.serial_monitor("Data send:" + pid)
+                        #print("Data trajectory send:", pid)
+                        self.serial_monitor("Data trajectory send:" + pid)
                         #time.sleep(0.5)
                     except:
                         print("Failed to send data!")
@@ -411,7 +411,7 @@ class MainWindow(QMainWindow):
 
     def handle_data_received(self, data):
         #print(data)
-        #self.serial_monitor(data) # Phải mở lại khi debug xong
+        self.serial_monitor(data) # Phải mở lại khi debug xong
         self.csv_data.append(data)
 
         #try:
