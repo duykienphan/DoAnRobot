@@ -273,10 +273,10 @@ class MainWindow(QMainWindow):
 
             for i in range(len(self.point2point_lst)):
                 if self.uic.comboBox_3.currentText() == self.trajectory_lst[0]:
-                    self.angle_2 = self.point2point_lst[i][1]*10
+                    self.angle_2 = self.point2point_lst[i][1]*10*(-1)
                     self.angle_1 = self.point2point_lst[i][0]*10
                 elif self.uic.comboBox_3.currentText() == self.trajectory_lst[1]:
-                    self.angle_2 = self.triangle_lst[i][1]*10
+                    self.angle_2 = self.triangle_lst[i][1]*10*(-1)
                     self.angle_1 = self.triangle_lst[i][0]*10
 
                 pid = kp_1+","+ki_1+","+kd_1+","+str(self.angle_1)+","+kp_2+","+ki_2+","+kd_2+","+str(self.angle_2)
@@ -285,8 +285,8 @@ class MainWindow(QMainWindow):
                     try:
                         self.serialCom.write(pid.encode())
                         time.sleep(0.02)
-                        print("Data send:", pid)
-                        self.serial_monitor(pid)
+                        #print("Data trajectory send:", pid)
+                        self.serial_monitor("Data trajectory send:" + pid)
                         #time.sleep(0.5)
                     except:
                         print("Failed to send data!")
@@ -333,7 +333,7 @@ class MainWindow(QMainWindow):
         kp_2 = self.uic.lineEdit_5.text()
         ki_2 = self.uic.lineEdit_6.text()
         kd_2 = self.uic.lineEdit_7.text()
-        self.angle_2 = int(self.uic.lineEdit_9.text())*10
+        self.angle_2 = int(self.uic.lineEdit_9.text())*10*(-1)
 
         pid = kp_1+","+ki_1+","+kd_1+","+str(self.angle_1)+","+kp_2+","+ki_2+","+kd_2+","+str(self.angle_2)
 
@@ -411,35 +411,35 @@ class MainWindow(QMainWindow):
 
     def handle_data_received(self, data):
         #print(data)
-        self.serial_monitor(data)
+        self.serial_monitor(data) # Phải mở lại khi debug xong
         self.csv_data.append(data)
 
         #try:
         values = data.split('/') 
         #print(values, len(values))
 
-        if len(values) == 10:
+        if len(values) == 12:
             self.position_1 = float(values[0])/182
             self.torque_1 = int(values[1])
             self.speed_1 = int(values[2])
             self.torque_pid_1 = int(values[3])
-            self.position_set_1 = int(values[4])
+            self.position_set_1 = float(values[4])/10
             self.temp_1 = int(values[5])
             self.position_2 = float(values[6])/182
             self.torque_2 = int(values[7])
             self.speed_2 = int(values[8])
-            self.torque_pid_2 = int(values[8])
-            self.position_set_1 = int(values[9])
-            self.temp_2 = int(values[10])
+            self.torque_pid_2 = int(values[9])
+            self.position_set_2 = float(values[10])/10
+            self.temp_2 = int(values[11])
 
-            self.data_graph.append(int(self.angle_1)/10)
+            self.data_graph.append(self.position_set_1)
             self.data_graph_line2.append(self.position_1)
             self.data_graph_2.append(self.torque_pid_1)
-            self.data_graph_2_line2.append(int(self.torque_1))
-            self.data_graph_3.append(int(self.angle_2)/10)
+            self.data_graph_2_line2.append(self.torque_1)
+            self.data_graph_3.append(self.position_set_2)
             self.data_graph_3_line2.append(self.position_2)
             self.data_graph_4.append(self.torque_pid_2)
-            self.data_graph_4_line2.append(int(self.torque_2))
+            self.data_graph_4_line2.append(self.torque_2)
 
             self.mcu_process_time += 0.02 # Thời gian delay trên vi điều khiển (ms)
             self.time_graph.append(self.mcu_process_time)

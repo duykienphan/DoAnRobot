@@ -9,7 +9,6 @@ from inverse_kinematic import Inverse_Kinematic
 class Trajector:
     def __init__(self):
         self.IK = Inverse_Kinematic()
-        self.list_coordinate = []
 
     def point2point_formular(self, t, t_start, t_end, x_start, y_start, vx_start, vy_start, x_end, y_end, vx_end, vy_end):       
         # Ma trận hệ số cho đa thức bậc ba
@@ -54,6 +53,7 @@ class Trajector:
         t = 0
         loop_duration = tc
         loop_time = t % loop_duration # Thời gian lặp. Thgian nhap = 20s
+        list_coordinate = []
 
         while t <= t_time:
             if loop_time < ta:
@@ -69,26 +69,26 @@ class Trajector:
             x, y = round(x, 2), round(y, 2)
             t += cycle
             loop_time = t % loop_duration
-            angle_x, angle_y = self.IK.IK_2DOF(x, 0, y, 2)
-            self.list_coordinate.append((self.IK.rad2deg(angle_x), self.IK.rad2deg(angle_y)))
-        return self.list_coordinate
+            angle_x, angle_y = self.IK.IK_2DOF(x, 0, y, 1)
+            list_coordinate.append((self.IK.rad2deg(angle_x), self.IK.rad2deg(angle_y)))
+        return list_coordinate
 
     def traingle_operate(self, t_time=9, cycle=0.02):
         ta = 0
-        xa = 20
-        ya = 40
+        xa = 10
+        ya = 20
         vxa = 0
         vya = 0
 
         tb = 3
-        xb = -20
-        yb = 40
+        xb = -10
+        yb = 20
         vxb = 0
         vyb = 0
 
         tc = 6
-        xc = 20
-        yc = 40
+        xc = 0
+        yc = 30
         vxc = 0
         vyc = 0
 
@@ -101,6 +101,7 @@ class Trajector:
         t = 0
         loop_duration = tc
         loop_time = t % loop_duration # Thời gian lặp. Thgian nhap = 20s
+        list_coordinate = []
 
         while t <= t_time:
             if loop_time < ta:
@@ -112,6 +113,8 @@ class Trajector:
                 x, y = self.point2point_formular(loop_time, ta, tb, xa, ya, vxa, vya, xb, yb, vxb, vyb)
             elif loop_time <= tc:
                 x, y = self.point2point_formular(loop_time, tb, tc, xb, yb, vxb, vyb, xc, yc, vxc, vyc)
+            elif loop_time <= td:
+                x, y = self.point2point_formular(loop_time, tc, td, xc, yc, vxc, vyc, xd, yd, vxd, vyd)
             else:
                 x = xd
                 y = yd
@@ -119,13 +122,13 @@ class Trajector:
             x, y = round(x, 2), round(y, 2)
             t += cycle
             loop_time = t % loop_duration
-            angle_x, angle_y = self.IK.IK_2DOF(x, 0, y, 2)
-            self.list_coordinate.append((self.IK.rad2deg(angle_x), self.IK.rad2deg(angle_y)))
-        return self.list_coordinate
+            angle_x, angle_y = self.IK.IK_2DOF(x, 0, y, 1)
+            list_coordinate.append((self.IK.rad2deg(angle_x), self.IK.rad2deg(angle_y)))
+        return list_coordinate
     
 if __name__ == "__main__":
     TP = Trajector()
     lst = TP.point2point_operate()
     for i in range(len(lst)):
-        print(lst[i][0], lst[i][1])
+        print(lst[i])
 
