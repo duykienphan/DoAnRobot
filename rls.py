@@ -53,19 +53,19 @@ class RLS:
         return y_h, R_current, theta
 
     def acceleration_1_calc(self, speed):
-        acceleration = (speed - self.pre_speed_1) * (1/50)
+        acceleration = (speed - self.pre_speed_1) * (0.02)
         self.pre_speed_1 = speed
         return round(acceleration, 2)
     
     def acceleration_2_calc(self, speed):
-        acceleration = (speed - self.pre_speed_2) * (1/50)
+        acceleration = (speed - self.pre_speed_2) * (0.02)
         self.pre_speed_2 = speed
         return round(acceleration, 2)
 
 
 if __name__ == "__main__":
     rls = RLS()
-    x, y, z = rls.identification(0.0393, -0.02141, 1.499, 0.5983, 0.5323, -0.4181)
+    x, y, z = rls.identification(0.0393, -0.02141, 1.499, 0.5983, 0.5323, -0.4181) # angle(radian), speed (dps), accleration (m/s^2)
     print(x)
     print()
     print(y)
