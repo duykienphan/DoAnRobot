@@ -746,7 +746,7 @@ class Ui_MainWindow(object):
         self.label_44.setText(_translate("MainWindow", "Nm"))
         self.label_45.setText(_translate("MainWindow", "dps"))
         self.label_46.setText(_translate("MainWindow", "*C"))
-        self.pushButton_5.setText(_translate("MainWindow", "Start Indentification"))
+        self.pushButton_5.setText(_translate("MainWindow", "Stop Indentification"))
         self.groupBox_4.setTitle(_translate("MainWindow", "Realtime Identification Graph"))
         self.label_31.setText(_translate("MainWindow", "Graph 5: Vị trí trọng tâm X của khớp 1"))
         self.label_32.setText(_translate("MainWindow", "Graph 7: Vị trí trọng tâm X của khâu 1"))

@@ -10,6 +10,7 @@ import pyqtgraph as pg
 
 from esp import ESP
 from trajector_planning import Trajector
+from rls import RLS
 
 class SerialReceiverThread(QThread):
     # Tín hiệu để gửi dữ liệu nhận được từ luồng đến giao diện chính
@@ -41,6 +42,7 @@ class MainWindow(QMainWindow):
         self.uic.setupUi(self.main_win)
         self.esp = ESP()
         self.TP = Trajector()
+        self.rls = RLS()
 
         # Đồ thị PyQtGraph 1
         self.uic.graphicsView.setBackground("w")
@@ -195,7 +197,8 @@ class MainWindow(QMainWindow):
         self.csv_data = []
 
         # Threading
-        self.is_running = False
+        self.is_running_TP = False
+        self.is_running_rls = False
 
         # Quy hoạch quỹ đạo
         self.point2point_lst = self.TP.point2point_operate()
@@ -217,6 +220,7 @@ class MainWindow(QMainWindow):
         self.uic.pushButton_2.clicked.connect(self.btn_clear_serial_monitor)
         self.uic.pushButton_8.clicked.connect(self.trajector_planning_start)
         self.uic.pushButton_9.clicked.connect(self.trajector_planning_stop)
+        self.uic.pushButton_5.clicked.connect(self.start_indentification)
 
         self.uic.actionOpen.triggered.connect(self.open_serial_monitor)
         self.uic.actionClose.triggered.connect(self.close_serial_monitor)
@@ -243,7 +247,7 @@ class MainWindow(QMainWindow):
                                      "{"
                                      "background-color: lightgreen;"
                                      "}")
-        self.is_running = True
+        self.is_running_TP = True
         try:
             self.thread1 = Thread(target=self.trajector_planning_operate)
             self.thread1.daemon = True
@@ -257,12 +261,12 @@ class MainWindow(QMainWindow):
                                      "{"
                                      "background-color: light gray;"
                                      "}")
-        self.is_running = False
+        self.is_running_TP = False
         if self.thread1 is not None:
             self.thread1.join()  # Wait for the thread to finish
         
     def trajector_planning_operate(self):
-        while self.is_running:
+        while self.is_running_TP:
             kp_1 = self.uic.lineEdit_2.text()
             ki_1 = self.uic.lineEdit_3.text()
             kd_1 = self.uic.lineEdit_4.text()
@@ -322,6 +326,21 @@ class MainWindow(QMainWindow):
         self.curve_4.setData(self.time_graph_4, self.data_graph_4)
         self.curve_4_line2.setData(self.time_graph_4, self.data_graph_4_line2)
 
+        # Thêm tham số cho bộ nhận dạng RLS ở Page 2
+        if self.is_running_rls:
+            x, y, z = self.rls.identification(self.torque_1, 
+                                              self.torque_2, 
+                                              self.position_1, 
+                                              self.position_2, 
+                                              self.speed_1, 
+                                              self.speed_2)
+            print(x)
+            print()
+            print(y)
+            print()
+            print(z)
+
+        # Hiển thị các thông số lấy từ động cơ ở Page 2
         self.mcu_params_display()
 
     def btn_send_pid_params(self):
@@ -420,13 +439,13 @@ class MainWindow(QMainWindow):
 
         if len(values) == 12:
             self.position_1 = float(values[0])/182
-            self.torque_1 = int(values[1])
+            self.torque_1 = int(values[1])/254
             self.speed_1 = int(values[2])
             self.torque_pid_1 = int(values[3])
             self.position_set_1 = float(values[4])/10
             self.temp_1 = int(values[5])
             self.position_2 = float(values[6])/182
-            self.torque_2 = int(values[7])
+            self.torque_2 = int(values[7])/254
             self.speed_2 = int(values[8])
             self.torque_pid_2 = int(values[9])
             self.position_set_2 = float(values[10])/10
@@ -465,6 +484,18 @@ class MainWindow(QMainWindow):
         self.uic.lineEdit_15.setText(str(self.torque_2))
         self.uic.lineEdit_16.setText(str(self.speed_2))
         self.uic.lineEdit_17.setText(str(self.temp_2))
+
+    def start_indentification(self):
+        if self.uic.pushButton_5.text() == "Stop Indentification":
+            self.is_running_rls = True
+            self.uic.pushButton_5.setStyleSheet("background-color: #90ee90")
+
+            self.uic.pushButton_5.setText("Starting Indentification")
+        else:
+            self.is_running_rls = False
+            self.uic.pushButton_5.setStyleSheet("background-color: #e1e1e1")
+            self.uic.pushButton_5.setText("Stop Indentification")
+
 ###################################################################################################
 
 ######################################### Menu Bar ################################################
