@@ -188,7 +188,7 @@ class MainWindow(QMainWindow):
         self.position_set_1 = 0
         self.temp_1 = 0
         self.torque_pid_1 = 0
-        self.position_1 = 0
+        self.position_2 = 0
         self.torque_2 = 0
         self.speed_2 = 0
         self.position_set_2 = 0
@@ -466,7 +466,7 @@ class MainWindow(QMainWindow):
             self.torque_2 = int(values[7])/245*(-1)
             self.speed_2 = int(values[8])
             self.torque_pid_2 = int(values[9])/245*(-1)
-            self.position_set_2 = float(values[10])/10
+            self.position_set_2 = float(values[10])/10*(-1)
             self.temp_2 = int(values[11])
 
             self.super_temporary_data_graph.append(self.super_temporary)
