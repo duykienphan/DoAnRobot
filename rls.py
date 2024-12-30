@@ -3,16 +3,21 @@ import numpy as np
 
 class RLS:
     def __init__(self):
-        self.error = 1e-5
+        self.error = 10
         self.pre_speed_1 = 0
         self.pre_speed_2 = 0
-        self.R_p = np.zeros((8, 8)) + self.error
-        self.theta_p = np.zeros(8)    
+        self.pre_pos_1 = 0
+        self.pre_pos_2 = 0
+        self.R_p = np.ones((8, 8)) * self.error
+        self.theta_p = np.zeros((8, 1))    
         self.count = 0
 
-    def identification(self, torque1, torque2, theta1, theta2, dtheta1, dtheta2): # theta = position, dtheta = speed
+    def identification(self, torque1, torque2, theta1, theta2): # theta = position, dtheta = speed
         t1 = torque1
         t2 = torque2
+
+        dtheta1 = self.speed_1_calc(theta1)
+        dtheta2 = self.speed_2_calc(theta2)
 
         ddtheta1 = self.acceleration_1_calc(dtheta1)
         ddtheta2 = self.acceleration_2_calc(dtheta2)
@@ -53,19 +58,28 @@ class RLS:
         return y_h, R_current, theta
 
     def acceleration_1_calc(self, speed):
-        acceleration = (speed - self.pre_speed_1) * (0.02)
+        acceleration = (speed - self.pre_speed_1) / (0.02)
         self.pre_speed_1 = speed
         return round(acceleration, 2)
     
     def acceleration_2_calc(self, speed):
-        acceleration = (speed - self.pre_speed_2) * (0.02)
+        acceleration = (speed - self.pre_speed_2) / (0.02)
         self.pre_speed_2 = speed
         return round(acceleration, 2)
 
+    def speed_1_calc(self, pos):
+        speed = (pos - self.pre_pos_1) / (0.02)
+        self.pre_pos_1 = pos
+        return round(speed, 2)
+    
+    def speed_2_calc(self, pos):
+        speed = (pos - self.pre_pos_2) / (0.02)
+        self.pre_pos_2 = pos
+        return round(speed, 2)
 
 if __name__ == "__main__":
     rls = RLS()
-    x, y, z = rls.identification(0.0393, -0.02141, 1.499, 0.5983, 0.5323, -0.4181) # angle(radian), speed (dps), accleration (m/s^2)
+    x, y, z = rls.identification(0.0393, -0.02141, 1.499, 0.5983) # angle(radian), speed (dps), accleration (m/s^2)
     print(x)
     print()
     print(y)

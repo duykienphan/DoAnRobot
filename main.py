@@ -331,14 +331,13 @@ class MainWindow(QMainWindow):
             x, y, z = self.rls.identification(self.torque_1, 
                                               self.torque_2, 
                                               self.position_1, 
-                                              self.position_2, 
-                                              self.speed_1, 
-                                              self.speed_2)
+                                              self.position_2)
             print(x)
             print()
             print(y)
             print()
             print(z)
+            time.sleep(2)
 
         # Hiển thị các thông số lấy từ động cơ ở Page 2
         self.mcu_params_display()
