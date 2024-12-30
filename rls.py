@@ -11,6 +11,8 @@ class RLS:
         self.R_p = np.ones((8, 8)) * self.error
         self.theta_p = np.zeros((8, 1))    
         self.count = 0
+        self.theta = np.zeros((8, 1))
+        self.count = 0
 
     def identification(self, torque1, torque2, theta1, theta2): # theta = position, dtheta = speed
         t1 = torque1
@@ -41,7 +43,7 @@ class RLS:
         a28 = 0
 
         lamda = 0.98
-        y_k = np.array([t1, t2])
+        y_k = np.array([[t1], [t2]])
         phi = np.array([[a11, a12, a13, a14, a15, a16, a17, a18],
                         [a21, a22, a23, a24, a25, a26, a27, a28]])
         
@@ -49,13 +51,16 @@ class RLS:
         e_k = y_k - np.matmul(phi, self.theta_p)
         
         R_inv = np.linalg.inv(R_current)
-        theta = self.theta_p + np.matmul(np.matmul(R_inv, phi.T), e_k)
-        y_h = np.matmul(phi, theta)
+        temp = np.matmul(R_inv, phi.T)
+        self.theta = self.theta_p + np.matmul(temp, e_k)
+        y_h = np.matmul(phi, self.theta)
 
         self.R_p = R_current
-        self.theta_p = theta
+        self.theta_p = self.theta
 
-        return y_h, R_current, theta
+        self.count += 1
+
+        return y_h, R_current, self.theta, self.count
 
     def acceleration_1_calc(self, speed):
         acceleration = (speed - self.pre_speed_1) / (0.02)

@@ -7,6 +7,7 @@ import time, csv
 from threading import Thread
 import serial.tools.list_ports
 import pyqtgraph as pg
+import numpy as np
 
 from esp import ESP
 from trajector_planning import Trajector
@@ -26,7 +27,7 @@ class SerialReceiverThread(QThread):
             if self.serial_com and self.serial_com.in_waiting > 0:
                 raw_data = self.serial_com.readline().strip()
                 decoded_data = raw_data.decode("utf-8", errors="replace")
-                print(decoded_data)
+                #print(decoded_data)
                 if decoded_data:
                     self.data_received.emit(decoded_data)  # Phát tín hiệu khi có dữ liệu mới
     
@@ -204,6 +205,11 @@ class MainWindow(QMainWindow):
         self.point2point_lst = self.TP.point2point_operate()
         self.triangle_lst = self.TP.traingle_operate()
 
+        # Nhận dạng hệ thống
+        self.super_temporary = 0
+        self.super_temporary_data_graph = []
+        self.super_temporary_time_graph = []
+
         self.uic.comboBox.addItems(self.PORT_LIST)
         self.uic.comboBox_2.addItems(["4800", "9600", "14400", "19200", "28800", "38400", "57600", "115200"])
         self.uic.comboBox_2.setCurrentText(str(self.BAUD_RATE))
@@ -275,7 +281,11 @@ class MainWindow(QMainWindow):
             ki_2 = self.uic.lineEdit_6.text()
             kd_2 = self.uic.lineEdit_7.text()
 
-            for i in range(len(self.point2point_lst)):
+            if self.uic.comboBox_3.currentText() == self.trajectory_lst[0]:
+                loop = len(self.point2point_lst)
+            else:
+                loop = len(self.triangle_lst)
+            for i in range(loop):
                 if self.uic.comboBox_3.currentText() == self.trajectory_lst[0]:
                     self.angle_2 = self.point2point_lst[i][1]*10*(-1)
                     self.angle_1 = self.point2point_lst[i][0]*10
@@ -284,6 +294,7 @@ class MainWindow(QMainWindow):
                     self.angle_1 = self.triangle_lst[i][0]*10
 
                 pid = kp_1+","+ki_1+","+kd_1+","+str(self.angle_1)+","+kp_2+","+ki_2+","+kd_2+","+str(self.angle_2)
+                #print(self.triangle_lst[i][0], self.triangle_lst[i][1])
 
                 if self.serialCom is not None:
                     try:
@@ -326,19 +337,27 @@ class MainWindow(QMainWindow):
         self.curve_4.setData(self.time_graph_4, self.data_graph_4)
         self.curve_4_line2.setData(self.time_graph_4, self.data_graph_4_line2)
 
+        if len(self.super_temporary_data_graph) > 100:
+            self.super_temporary_data_graph.pop(0)
+            self.super_temporary_time_graph.pop(0)
+        self.curve_5.setData(self.super_temporary_time_graph, self.super_temporary_data_graph)
+        
+
         # Thêm tham số cho bộ nhận dạng RLS ở Page 2
         if self.is_running_rls:
-            x, y, z = self.rls.identification(self.torque_1, 
+            x, y, z, count = self.rls.identification(self.torque_1, 
                                               self.torque_2, 
                                               self.position_1, 
                                               self.position_2)
+            self.super_temporary = z[6][0]
+            #print(self.super_temporary)
+            """print(z)
             print(x)
             print()
             print(y)
-            print()
+            print()"""
             print(z)
-            time.sleep(2)
-
+            print()
         # Hiển thị các thông số lấy từ động cơ ở Page 2
         self.mcu_params_display()
 
@@ -371,7 +390,7 @@ class MainWindow(QMainWindow):
         if self.serialCom is not None:
             try:
                 self.serialCom.write(data.encode())
-                print("Data send:", data)
+                #print("Data send:", data)
                 self.serial_monitor(data)
                 self.uic.lineEdit.clear()
                 #time.sleep(0.5)
@@ -438,17 +457,20 @@ class MainWindow(QMainWindow):
 
         if len(values) == 12:
             self.position_1 = float(values[0])/182
-            self.torque_1 = int(values[1])/254
+            self.torque_1 = int(values[1])/245
             self.speed_1 = int(values[2])
-            self.torque_pid_1 = int(values[3])
+            self.torque_pid_1 = int(values[3])/245
             self.position_set_1 = float(values[4])/10
             self.temp_1 = int(values[5])
-            self.position_2 = float(values[6])/182
-            self.torque_2 = int(values[7])/254
+            self.position_2 = float(values[6])/182*(-1)
+            self.torque_2 = int(values[7])/245*(-1)
             self.speed_2 = int(values[8])
-            self.torque_pid_2 = int(values[9])
+            self.torque_pid_2 = int(values[9])/245*(-1)
             self.position_set_2 = float(values[10])/10
             self.temp_2 = int(values[11])
+
+            self.super_temporary_data_graph.append(self.super_temporary)
+            self.super_temporary_time_graph.append(self.mcu_process_time)
 
             self.data_graph.append(self.position_set_1)
             self.data_graph_line2.append(self.position_1)
@@ -476,11 +498,11 @@ class MainWindow(QMainWindow):
 ########################################## Page 2 #################################################
     def mcu_params_display(self):
         self.uic.lineEdit_10.setText(str(round(self.position_1, 0)))
-        self.uic.lineEdit_11.setText(str(self.torque_1))
+        self.uic.lineEdit_11.setText(str(round(self.torque_1, 2)))
         self.uic.lineEdit_12.setText(str(self.speed_1))
         self.uic.lineEdit_13.setText(str(self.temp_1))
         self.uic.lineEdit_14.setText(str(round(self.position_2, 0)))
-        self.uic.lineEdit_15.setText(str(self.torque_2))
+        self.uic.lineEdit_15.setText(str(round(self.torque_2, 2)))
         self.uic.lineEdit_16.setText(str(self.speed_2))
         self.uic.lineEdit_17.setText(str(self.temp_2))
 
