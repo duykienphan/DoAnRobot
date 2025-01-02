@@ -12,6 +12,7 @@ import numpy as np
 from esp import ESP
 from trajector_planning import Trajector
 from rls import RLS
+from inverse_kinematic import Inverse_Kinematic
 
 class SerialReceiverThread(QThread):
     # Tín hiệu để gửi dữ liệu nhận được từ luồng đến giao diện chính
@@ -44,6 +45,7 @@ class MainWindow(QMainWindow):
         self.esp = ESP()
         self.TP = Trajector()
         self.rls = RLS()
+        self.IK = Inverse_Kinematic()
 
         # Đồ thị PyQtGraph 1
         self.uic.graphicsView.setBackground("w")
@@ -167,6 +169,8 @@ class MainWindow(QMainWindow):
         self.data_graph_8_line2 = []
         self.data_graph_9 = []
         self.data_graph_9_line2 = []
+        self.data_graph_10 = []
+        self.data_graph_10_line2 = []
 
         self.time_graph = []
         self.time_graph_2 = []
@@ -177,6 +181,7 @@ class MainWindow(QMainWindow):
         self.time_graph_7 = []
         self.time_graph_8 = []
         self.time_graph_9 = []
+        self.time_graph_10 = []
         self.mcu_process_time = 0
 
         self.angle_1 = 0
@@ -197,6 +202,18 @@ class MainWindow(QMainWindow):
 
         self.csv_data = []
 
+        # Nhận dạng hệ thống
+        self.x1 = 0
+        self.y1 = 0
+        self.x2 = 0
+        self.y2 = 0
+        self.J1 = 0
+        self.J2 = 0
+        self.x1_setpoint = self.rls.x1_setpoint
+        self.y1_setpoint = self.rls.y1_setpoint
+        self.x2_setpoint = self.rls.x2_setpoint
+        self.y2_setpoint = self.rls.y2_setpoint
+
         # Threading
         self.is_running_TP = False
         self.is_running_rls = False
@@ -204,11 +221,6 @@ class MainWindow(QMainWindow):
         # Quy hoạch quỹ đạo
         self.point2point_lst = self.TP.point2point_operate()
         self.triangle_lst = self.TP.traingle_operate()
-
-        # Nhận dạng hệ thống
-        self.super_temporary = 0
-        self.super_temporary_data_graph = []
-        self.super_temporary_time_graph = []
 
         self.uic.comboBox.addItems(self.PORT_LIST)
         self.uic.comboBox_2.addItems(["4800", "9600", "14400", "19200", "28800", "38400", "57600", "115200"])
@@ -337,26 +349,63 @@ class MainWindow(QMainWindow):
         self.curve_4.setData(self.time_graph_4, self.data_graph_4)
         self.curve_4_line2.setData(self.time_graph_4, self.data_graph_4_line2)
 
-        if len(self.super_temporary_data_graph) > 100:
-            self.super_temporary_data_graph.pop(0)
-            self.super_temporary_time_graph.pop(0)
-        self.curve_5.setData(self.super_temporary_time_graph, self.super_temporary_data_graph)
-        
+        if len(self.data_graph_5) > 100:
+            self.data_graph_5.pop(0)
+            self.data_graph_5_line2.pop(0)
+            self.time_graph_5.pop(0)
+        self.curve_5.setData(self.time_graph_5, self.data_graph_5)
+        self.curve_5_line2.setData(self.time_graph_5, self.data_graph_5_line2)
+
+        if len(self.data_graph_6) > 100:
+            self.data_graph_6.pop(0)
+            self.data_graph_6_line2.pop(0)
+            self.time_graph_6.pop(0)
+        self.curve_6.setData(self.time_graph_6, self.data_graph_6)
+        self.curve_6_line2.setData(self.time_graph_6, self.data_graph_6_line2)
+
+        if len(self.data_graph_7) > 100:
+            self.data_graph_7.pop(0)
+            self.data_graph_7_line2.pop(0)
+            self.time_graph_7.pop(0)
+        self.curve_7.setData(self.time_graph_7, self.data_graph_7)
+        self.curve_7_line2.setData(self.time_graph_7, self.data_graph_7_line2)
+
+        if len(self.data_graph_8) > 100:
+            self.data_graph_8.pop(0)
+            self.data_graph_8_line2.pop(0)
+            self.time_graph_8.pop(0)
+        self.curve_8.setData(self.time_graph_8, self.data_graph_8)
+        self.curve_8_line2.setData(self.time_graph_8, self.data_graph_8_line2)
+
+        if len(self.data_graph_9) > 100:
+            self.data_graph_9.pop(0)
+            self.data_graph_9_line2.pop(0)
+            self.time_graph_9.pop(0)
+        self.curve_9.setData(self.time_graph_9, self.data_graph_9)
+        self.curve_9_line2.setData(self.time_graph_9, self.data_graph_9_line2)
+
+        if len(self.data_graph_10) > 100:
+            self.data_graph_10.pop(0)
+            self.data_graph_10_line2.pop(0)
+            self.time_graph_10.pop(0)
+        self.curve_10.setData(self.time_graph_10, self.data_graph_10)
+        self.curve_10_line2.setData(self.time_graph_10, self.data_graph_10_line2)
 
         # Thêm tham số cho bộ nhận dạng RLS ở Page 2
         if self.is_running_rls:
-            x, y, z, count = self.rls.identification(self.torque_1, 
-                                              self.torque_2, 
-                                              self.position_1, 
-                                              self.position_2)
-            self.super_temporary = z[6][0]
+            self.x1, self.y1, self.x2, self.y2, self.J1, self.J2, eva1, eva2, eva3, eva4 = self.rls.identification(
+                                                                                                                    self.torque_1, 
+                                                                                                                    self.torque_2, 
+                                                                                                                    self.IK.deg2rad(self.position_1), 
+                                                                                                                    self.IK.deg2rad(self.position_2)
+                                                                                                                    )
             #print(self.super_temporary)
-            """print(z)
-            print(x)
-            print()
-            print(y)
-            print()"""
-            print(z)
+            # print(self.torque_1, 
+            #     self.torque_2, 
+            #     self.IK.deg2rad(self.position_1), 
+            #     self.IK.deg2rad(self.position_2))
+            print(f"x1: {self.x1}, y1: {self.x2}, x2: {self.x2}, y2: {self.y2}, J1: {self.J1}, J2: {self.J2}")
+            print(eva1, eva2, eva3, eva4)
             print()
         # Hiển thị các thông số lấy từ động cơ ở Page 2
         self.mcu_params_display()
@@ -469,8 +518,20 @@ class MainWindow(QMainWindow):
             self.position_set_2 = float(values[10])/10*(-1)
             self.temp_2 = int(values[11])
 
-            self.super_temporary_data_graph.append(self.super_temporary)
-            self.super_temporary_time_graph.append(self.mcu_process_time)
+            # Nhận dạng hệ thống
+            try:
+                self.data_graph_5_line2.append(self.x1)
+                self.data_graph_6_line2.append(self.y1)
+                self.data_graph_7_line2.append(self.x2)
+                self.data_graph_8_line2.append(self.y2)
+                self.data_graph_9_line2.append(self.J1)
+                self.data_graph_10_line2.append(self.J2)
+            except:
+                self.data_graph_5_line2.append(0)
+                self.data_graph_6_line2.append(0)
+                self.data_graph_7_line2.append(0)
+                self.data_graph_8_line2.append(0)
+                self.data_graph_9_line2.append(0)
 
             self.data_graph.append(self.position_set_1)
             self.data_graph_line2.append(self.position_1)
@@ -481,11 +542,22 @@ class MainWindow(QMainWindow):
             self.data_graph_4.append(self.torque_pid_2)
             self.data_graph_4_line2.append(self.torque_2)
 
+            self.data_graph_5.append(self.x1_setpoint)
+            self.data_graph_6.append(self.y1_setpoint)
+            self.data_graph_7.append(self.x2_setpoint)
+            self.data_graph_8.append(self.y2_setpoint)
+
             self.mcu_process_time += 0.02 # Thời gian delay trên vi điều khiển (ms)
             self.time_graph.append(self.mcu_process_time)
             self.time_graph_2.append(self.mcu_process_time)
             self.time_graph_3.append(self.mcu_process_time)
             self.time_graph_4.append(self.mcu_process_time)
+            self.time_graph_5.append(self.mcu_process_time)
+            self.time_graph_6.append(self.mcu_process_time)
+            self.time_graph_7.append(self.mcu_process_time)
+            self.time_graph_8.append(self.mcu_process_time)
+            self.time_graph_9.append(self.mcu_process_time)
+            self.time_graph_10.append(self.mcu_process_time)
             #print(values)
         else:
             print("Error: Invalid data format")

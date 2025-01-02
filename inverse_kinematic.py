@@ -47,6 +47,13 @@ class Inverse_Kinematic:
             deg = 0.0
         return int(deg)
     
+    def deg2rad(self, deg):
+        rad = deg * (math.pi/180)
+        rad = round(rad, 4)
+        if rad == -0.0000:
+            rad = 0
+        return float(rad)
+    
 if __name__ == "__main__":
     IK = Inverse_Kinematic()
 
