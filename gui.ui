@@ -1419,7 +1419,7 @@
               <item>
                <widget class="QLabel" name="label_32">
                 <property name="text">
-                 <string>Graph 7: Vị trí trọng tâm X của khâu 1</string>
+                 <string>Graph 7: Vị trí trọng tâm Y của khâu 1</string>
                 </property>
                </widget>
               </item>
@@ -1534,7 +1534,7 @@
               <item>
                <widget class="QLabel" name="label_31">
                 <property name="text">
-                 <string>Graph 5: Vị trí trọng tâm X của khớp 1</string>
+                 <string>Graph 5: Vị trí trọng tâm X của khâu 1</string>
                 </property>
                </widget>
               </item>
