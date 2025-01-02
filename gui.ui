@@ -1277,7 +1277,7 @@
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>47</width>
+                  <width>31</width>
                   <height>20</height>
                  </size>
                 </property>
@@ -1285,8 +1285,14 @@
               </item>
               <item>
                <widget class="QPushButton" name="pushButton_10">
+                <property name="minimumSize">
+                 <size>
+                  <width>125</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="text">
-                 <string>Evaluate</string>
+                 <string>RMSE Evaluate</string>
                 </property>
                </widget>
               </item>
@@ -1297,7 +1303,7 @@
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>47</width>
+                  <width>31</width>
                   <height>20</height>
                  </size>
                 </property>

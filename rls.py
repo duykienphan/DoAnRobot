@@ -81,19 +81,24 @@ class RLS:
         J1 = self.theta[0][0]-(self.m2*(self.l1**2))-(self.m1*(x1**2))-(self.m1*(y1**2))
         J2 = self.theta[1][0]-self.m2*((self.theta[2][0]/(self.m2*self.l1))**2)-self.m2*((self.theta[3][0]/(self.m2*self.l1))**2)
 
-        self.x1_total += x1
-        self.y1_total += y1
-        self.x2_total += x2
-        self.y2_total += y2
+        minus1 = math.pow(x1 - self.x1_setpoint, 2)
+        minus2 = math.pow(y1 - self.y1_setpoint, 2)
+        minus3 = math.pow(x2 - self.x2_setpoint, 2)
+        minus4 = math.pow(y2 - self.y2_setpoint, 2)
+
+        self.x1_total += minus1
+        self.y1_total += minus2
+        self.x2_total += minus3
+        self.y2_total += minus4
         self.count += 1
         
         return round(x1, 8), round(y1, 8), round(x2, 8), round(y2, 8), round(J1, 8), round(J2, 8)
     
-    def evaluation(self):
-        eval1 = round(self.x1_total / self.count, 2)
-        eval2 = round(self.y1_total / self.count, 2)
-        eval3 = round(self.x2_total / self.count, 2)
-        eval4 = round(self.y2_total / self.count, 2)
+    def rmse_evaluation(self):
+        eval1 = round(math.sqrt(self.x1_total / self.count), 4) * 100
+        eval2 = round(math.sqrt(self.y1_total / self.count), 4) * 100
+        eval3 = round(math.sqrt(self.x2_total / self.count), 4) * 100
+        eval4 = round(math.sqrt(self.y2_total / self.count), 4) * 100
         return eval1, eval2, eval3, eval4
 
     def acceleration_1_calc(self, speed):
