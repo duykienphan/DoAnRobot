@@ -1173,7 +1173,7 @@
                <height>100</height>
               </size>
              </property>
-             <layout class="QFormLayout" name="formLayout_3">
+             <layout class="QGridLayout" name="gridLayout_7">
               <item row="0" column="0">
                <widget class="QLabel" name="label_48">
                 <property name="minimumSize">
@@ -1220,7 +1220,11 @@
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QLineEdit" name="lineEdit_20"/>
+               <widget class="QLineEdit" name="lineEdit_20">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="3" column="0">
                <widget class="QLabel" name="label_51">
@@ -1236,7 +1240,11 @@
                </widget>
               </item>
               <item row="3" column="1">
-               <widget class="QLineEdit" name="lineEdit_21"/>
+               <widget class="QLineEdit" name="lineEdit_21">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -1320,34 +1328,6 @@
            <string>Realtime Identification Graph</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
-           <item row="0" column="0">
-            <widget class="QWidget" name="widget_22" native="true">
-             <layout class="QVBoxLayout" name="verticalLayout_10">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QLabel" name="label_31">
-                <property name="text">
-                 <string>Graph 5: Vị trí trọng tâm X của khớp 1</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="PlotWidget" name="graphicsView_4"/>
-              </item>
-             </layout>
-            </widget>
-           </item>
            <item row="0" column="1">
             <widget class="QWidget" name="widget_23" native="true">
              <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1372,34 +1352,6 @@
               </item>
               <item>
                <widget class="PlotWidget" name="graphicsView_5"/>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QWidget" name="widget_24" native="true">
-             <layout class="QVBoxLayout" name="verticalLayout">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QLabel" name="label_33">
-                <property name="text">
-                 <string>Graph 6: Vị trí trọng tâm Y của khâu 1</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="PlotWidget" name="graphicsView_6"/>
               </item>
              </layout>
             </widget>
@@ -1435,6 +1387,9 @@
            <item row="2" column="0">
             <widget class="QWidget" name="widget_26" native="true">
              <layout class="QVBoxLayout" name="verticalLayout_19">
+              <property name="spacing">
+               <number>6</number>
+              </property>
               <property name="leftMargin">
                <number>0</number>
               </property>
@@ -1484,6 +1439,62 @@
               </item>
               <item>
                <widget class="PlotWidget" name="graphicsView_13"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QWidget" name="widget_22" native="true">
+             <layout class="QVBoxLayout" name="verticalLayout_10">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_31">
+                <property name="text">
+                 <string>Graph 5: Vị trí trọng tâm X của khớp 1</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="PlotWidget" name="graphicsView_4"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QWidget" name="widget_24" native="true">
+             <layout class="QVBoxLayout" name="verticalLayout">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_33">
+                <property name="text">
+                 <string>Graph 6: Vị trí trọng tâm Y của khâu 1</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="PlotWidget" name="graphicsView_6"/>
               </item>
              </layout>
             </widget>

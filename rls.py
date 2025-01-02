@@ -11,7 +11,6 @@ class RLS:
         self.R_p = np.ones((8, 8)) * self.error
         self.theta_p = np.zeros((8, 1))    
         self.theta = np.zeros((8, 1))
-        self.count = 0
 
         self.m1 = 0.3493
         self.m2 = 0.0823
@@ -20,6 +19,11 @@ class RLS:
         self.g=9.8
 
         # Đánh giá
+        self.x1_total = 0
+        self.y1_total = 0
+        self.x2_total = 0
+        self.y2_total = 0
+        self.count = 0
 
         self.x1_setpoint = 0.15846905
         self.y1_setpoint = 0.00006093
@@ -77,7 +81,20 @@ class RLS:
         J1 = self.theta[0][0]-(self.m2*(self.l1**2))-(self.m1*(x1**2))-(self.m1*(y1**2))
         J2 = self.theta[1][0]-self.m2*((self.theta[2][0]/(self.m2*self.l1))**2)-self.m2*((self.theta[3][0]/(self.m2*self.l1))**2)
 
+        self.x1_total += x1
+        self.y1_total += y1
+        self.x2_total += x2
+        self.y2_total += y2
+        self.count += 1
+        
         return round(x1, 8), round(y1, 8), round(x2, 8), round(y2, 8), round(J1, 8), round(J2, 8)
+    
+    def evaluation(self):
+        eval1 = round(self.x1_total / self.count, 2)
+        eval2 = round(self.y1_total / self.count, 2)
+        eval3 = round(self.x2_total / self.count, 2)
+        eval4 = round(self.y2_total / self.count, 2)
+        return eval1, eval2, eval3, eval4
 
     def acceleration_1_calc(self, speed):
         acceleration = (speed - self.pre_speed_1) / (0.02)

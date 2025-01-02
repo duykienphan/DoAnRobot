@@ -239,6 +239,7 @@ class MainWindow(QMainWindow):
         self.uic.pushButton_8.clicked.connect(self.trajector_planning_start)
         self.uic.pushButton_9.clicked.connect(self.trajector_planning_stop)
         self.uic.pushButton_5.clicked.connect(self.start_indentification)
+        self.uic.pushButton_10.clicked.connect(self.evaluation)
 
         self.uic.actionOpen.triggered.connect(self.open_serial_monitor)
         self.uic.actionClose.triggered.connect(self.close_serial_monitor)
@@ -567,6 +568,13 @@ class MainWindow(QMainWindow):
 ###################################################################################################
 
 ########################################## Page 2 #################################################
+    def evaluation(self):
+        eval1, eval2, eval3, eval4 = self.rls.evaluation()
+        self.uic.lineEdit_18.setText(eval1)
+        self.uic.lineEdit_19.setText(eval2)
+        self.uic.lineEdit_20.setText(eval3)
+        self.uic.lineEdit_21.setText(eval4)
+
     def mcu_params_display(self):
         self.uic.lineEdit_10.setText(str(round(self.position_1, 0)))
         self.uic.lineEdit_11.setText(str(round(self.torque_1, 2)))
@@ -581,12 +589,16 @@ class MainWindow(QMainWindow):
         if self.uic.pushButton_5.text() == "Stop Indentification":
             self.is_running_rls = True
             self.uic.pushButton_5.setStyleSheet("background-color: #90ee90")
-
             self.uic.pushButton_5.setText("Starting Indentification")
         else:
             self.is_running_rls = False
             self.uic.pushButton_5.setStyleSheet("background-color: #e1e1e1")
             self.uic.pushButton_5.setText("Stop Indentification")
+            self.rls.x1_total = 0
+            self.rls.y1_total = 0
+            self.rls.x2_total = 0
+            self.rls.y2_total = 0
+            self.rls.count = 0
 
 ###################################################################################################
 
