@@ -570,10 +570,10 @@ class MainWindow(QMainWindow):
 ########################################## Page 2 #################################################
     def evaluation(self):
         eval1, eval2, eval3, eval4 = self.rls.rmse_evaluation()
-        self.uic.lineEdit_18.setText(str(eval1))
-        self.uic.lineEdit_19.setText(str(eval2))
-        self.uic.lineEdit_20.setText(str(eval3))
-        self.uic.lineEdit_21.setText(str(eval4))
+        self.uic.lineEdit_18.setText(str(eval1)[0:5]+"%")
+        self.uic.lineEdit_19.setText(str(eval2)[0:5]+"%")
+        self.uic.lineEdit_20.setText(str(eval3)[0:5]+"%")
+        self.uic.lineEdit_21.setText(str(eval4)[0:5]+"%")
 
     def mcu_params_display(self):
         self.uic.lineEdit_10.setText(str(round(self.position_1, 0)))
