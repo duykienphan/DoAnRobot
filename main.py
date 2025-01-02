@@ -393,19 +393,18 @@ class MainWindow(QMainWindow):
 
         # Thêm tham số cho bộ nhận dạng RLS ở Page 2
         if self.is_running_rls:
-            self.x1, self.y1, self.x2, self.y2, self.J1, self.J2, eva1, eva2, eva3, eva4 = self.rls.identification(
-                                                                                                                    self.torque_1, 
-                                                                                                                    self.torque_2, 
-                                                                                                                    self.IK.deg2rad(self.position_1), 
-                                                                                                                    self.IK.deg2rad(self.position_2)
-                                                                                                                    )
+            self.x1, self.y1, self.x2, self.y2, self.J1, self.J2 = self.rls.identification(
+                                                                                            self.torque_1, 
+                                                                                            self.torque_2, 
+                                                                                            self.IK.deg2rad(self.position_1), 
+                                                                                            self.IK.deg2rad(self.position_2)
+                                                                                            )
             #print(self.super_temporary)
             # print(self.torque_1, 
             #     self.torque_2, 
             #     self.IK.deg2rad(self.position_1), 
             #     self.IK.deg2rad(self.position_2))
             print(f"x1: {self.x1}, y1: {self.x2}, x2: {self.x2}, y2: {self.y2}, J1: {self.J1}, J2: {self.J2}")
-            print(eva1, eva2, eva3, eva4)
             print()
         # Hiển thị các thông số lấy từ động cơ ở Page 2
         self.mcu_params_display()

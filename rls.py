@@ -20,14 +20,6 @@ class RLS:
         self.g=9.8
 
         # Đánh giá
-        self.result_1 = 0
-        self.RMSE_1 = 0
-        self.result_2 = 0
-        self.RMSE_2 = 0
-        self.result_3 = 0
-        self.RMSE_3 = 0
-        self.result_4 = 0
-        self.RMSE_4 = 0
 
         self.x1_setpoint = 0.15846905
         self.y1_setpoint = 0.00006093
@@ -85,36 +77,7 @@ class RLS:
         J1 = self.theta[0][0]-(self.m2*(self.l1**2))-(self.m1*(x1**2))-(self.m1*(y1**2))
         J2 = self.theta[1][0]-self.m2*((self.theta[2][0]/(self.m2*self.l1))**2)-self.m2*((self.theta[3][0]/(self.m2*self.l1))**2)
 
-        eva1 = self.evaluate1(self.x1_setpoint, x1)
-        eva2 = self.evaluate2(self.y1_setpoint, y1)
-        eva3 = self.evaluate3(self.x2_setpoint, x2)
-        eva4 = self.evaluate4(self.y2_setpoint, y2)
-
-        return round(x1, 8), round(y1, 8), round(x2, 8), round(y2, 8), round(J1, 8), round(J2, 8), round(eva1, 2), round(eva2, 2), round(eva3, 2), round(eva4, 2)
-
-    def evaluate1(self, setpoint, indentify):
-        self.result_1 = self.result_1 + math.pow((setpoint - indentify), 2)
-        self.count += 1
-        self.RMSE_1 = self.RMSE_1 + math.sqrt(self.result_1/self.count)
-        return self.RMSE_1
-    
-    def evaluate2(self, setpoint, indentify):
-        self.result_2 = self.result_2 + math.pow((setpoint - indentify), 2)
-        self.count += 1
-        self.RMSE_2 = self.RMSE_2 + math.sqrt(self.result_2/self.count)
-        return self.RMSE_2
-    
-    def evaluate3(self, setpoint, indentify):
-        self.result_3 = self.result_3 + math.pow((setpoint - indentify), 2)gi
-        self.count += 1
-        self.RMSE_3 = self.RMSE_3 + math.sqrt(self.result_3/self.count)
-        return self.RMSE_3
-
-    def evaluate4(self, setpoint, indentify):
-        self.result_4 = self.result_4 + math.pow((setpoint - indentify), 2)
-        self.count += 1
-        self.RMSE_4 = self.RMSE_4 + math.sqrt(self.result_4/self.count)
-        return self.RMSE_4
+        return round(x1, 8), round(y1, 8), round(x2, 8), round(y2, 8), round(J1, 8), round(J2, 8)
 
     def acceleration_1_calc(self, speed):
         acceleration = (speed - self.pre_speed_1) / (0.02)
