@@ -585,6 +585,12 @@ class MainWindow(QMainWindow):
         self.uic.lineEdit_16.setText(str(self.speed_2))
         self.uic.lineEdit_17.setText(str(self.temp_2))
 
+        # Page 2
+        self.uic.lineEdit_22.setText(str(self.x1))
+        self.uic.lineEdit_23.setText(str(self.y1))
+        self.uic.lineEdit_24.setText(str(self.x2))
+        self.uic.lineEdit_25.setText(str(self.y2))
+
     def start_indentification(self):
         if self.uic.pushButton_5.text() == "Stop Indentification":
             self.is_running_rls = True

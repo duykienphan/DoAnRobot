@@ -905,6 +905,9 @@
            <item>
             <widget class="QWidget" name="widget_14" native="true">
              <layout class="QGridLayout" name="gridLayout_4">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
               <item row="1" column="1">
                <widget class="QLineEdit" name="lineEdit_11">
                 <property name="readOnly">
@@ -1002,6 +1005,9 @@
            <item>
             <widget class="QWidget" name="widget_2" native="true">
              <layout class="QGridLayout" name="gridLayout_5">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
               <item row="2" column="0">
                <widget class="QLabel" name="label_27">
                 <property name="text">
@@ -1174,7 +1180,81 @@
               </size>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
-              <item row="0" column="0">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="lineEdit_24"/>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLineEdit" name="lineEdit_18"/>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_50">
+                <property name="minimumSize">
+                 <size>
+                  <width>30</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>x2:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2">
+               <widget class="QLineEdit" name="lineEdit_21">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="lineEdit_22"/>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="lineEdit_23"/>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_49">
+                <property name="minimumSize">
+                 <size>
+                  <width>30</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>y1:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_51">
+                <property name="minimumSize">
+                 <size>
+                  <width>30</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>y2:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QLineEdit" name="lineEdit_20">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLineEdit" name="lineEdit_19"/>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="lineEdit_25"/>
+              </item>
+              <item row="1" column="0">
                <widget class="QLabel" name="label_48">
                 <property name="minimumSize">
                  <size>
@@ -1188,61 +1268,16 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QLineEdit" name="lineEdit_18"/>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_49">
-                <property name="minimumSize">
-                 <size>
-                  <width>30</width>
-                  <height>0</height>
-                 </size>
-                </property>
+               <widget class="QLabel" name="label_53">
                 <property name="text">
-                 <string>y1:</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Realtime value&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QLineEdit" name="lineEdit_19"/>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_50">
-                <property name="minimumSize">
-                 <size>
-                  <width>30</width>
-                  <height>0</height>
-                 </size>
-                </property>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_54">
                 <property name="text">
-                 <string>x2:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="lineEdit_20">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_51">
-                <property name="minimumSize">
-                 <size>
-                  <width>30</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>y2:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="lineEdit_21">
-                <property name="readOnly">
-                 <bool>true</bool>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Evaluation&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
@@ -1277,7 +1312,7 @@
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>31</width>
+                  <width>32</width>
                   <height>20</height>
                  </size>
                 </property>
@@ -1303,7 +1338,7 @@
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>31</width>
+                  <width>32</width>
                   <height>20</height>
                  </size>
                 </property>
