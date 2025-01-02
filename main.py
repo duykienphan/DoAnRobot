@@ -586,10 +586,12 @@ class MainWindow(QMainWindow):
         self.uic.lineEdit_17.setText(str(self.temp_2))
 
         # Page 2
-        self.uic.lineEdit_22.setText(str(self.x1))
-        self.uic.lineEdit_23.setText(str(self.y1))
-        self.uic.lineEdit_24.setText(str(self.x2))
-        self.uic.lineEdit_25.setText(str(self.y2))
+        self.uic.lineEdit_22.setText(str(round(self.x1, 4)))
+        self.uic.lineEdit_23.setText(str(round(self.y1, 4)))
+        self.uic.lineEdit_24.setText(str(round(self.x2, 4)))
+        self.uic.lineEdit_25.setText(str(round(self.y2, 4)))
+        self.uic.lineEdit_26.setText(str(round(self.J1, 4)))
+        self.uic.lineEdit_27.setText(str(round(self.J2, 4)))
 
     def start_indentification(self):
         if self.uic.pushButton_5.text() == "Stop Indentification":
