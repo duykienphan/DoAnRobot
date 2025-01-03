@@ -31,7 +31,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -341,7 +341,7 @@
                        </size>
                       </property>
                       <property name="text">
-                       <string>1500</string>
+                       <string>500</string>
                       </property>
                      </widget>
                     </item>
@@ -885,6 +885,12 @@
         </property>
         <item>
          <widget class="QGroupBox" name="groupBox_3">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>30</height>
+           </size>
+          </property>
           <property name="title">
            <string>Realtime Parameters</string>
           </property>
@@ -899,6 +905,9 @@
            <item>
             <widget class="QWidget" name="widget_14" native="true">
              <layout class="QGridLayout" name="gridLayout_4">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
               <item row="1" column="1">
                <widget class="QLineEdit" name="lineEdit_11">
                 <property name="readOnly">
@@ -996,6 +1005,9 @@
            <item>
             <widget class="QWidget" name="widget_2" native="true">
              <layout class="QGridLayout" name="gridLayout_5">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
               <item row="2" column="0">
                <widget class="QLabel" name="label_27">
                 <property name="text">
@@ -1126,7 +1138,7 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string>Start Indentification</string>
+                 <string>Stop Indentification</string>
                 </property>
                </widget>
               </item>
@@ -1138,6 +1150,227 @@
                 <property name="sizeHint" stdset="0">
                  <size>
                   <width>31</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_47">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Evaluation&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="widget_28" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_7">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="lineEdit_24"/>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_53">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Realtime value&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_54">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Evaluation&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLineEdit" name="lineEdit_18"/>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_50">
+                <property name="minimumSize">
+                 <size>
+                  <width>30</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>x2:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2">
+               <widget class="QLineEdit" name="lineEdit_21">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="lineEdit_22"/>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_52">
+                <property name="text">
+                 <string>J1:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="lineEdit_23"/>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_49">
+                <property name="minimumSize">
+                 <size>
+                  <width>30</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>y1:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_51">
+                <property name="minimumSize">
+                 <size>
+                  <width>30</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>y2:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QLineEdit" name="lineEdit_20">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLineEdit" name="lineEdit_19"/>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="lineEdit_25">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_48">
+                <property name="minimumSize">
+                 <size>
+                  <width>30</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>x1:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="label_55">
+                <property name="text">
+                 <string>J2:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLineEdit" name="lineEdit_26">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QLineEdit" name="lineEdit_27">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="widget_29" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <spacer name="horizontalSpacer_7">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>32</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_10">
+                <property name="minimumSize">
+                 <size>
+                  <width>125</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>RMSE Evaluate</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_8">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>32</width>
                   <height>20</height>
                  </size>
                 </property>
@@ -1168,34 +1401,6 @@
            <string>Realtime Identification Graph</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
-           <item row="0" column="0">
-            <widget class="QWidget" name="widget_22" native="true">
-             <layout class="QVBoxLayout" name="verticalLayout_10">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QLabel" name="label_31">
-                <property name="text">
-                 <string>Graph 5: Vị trí trọng tâm X của khớp 1</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="PlotWidget" name="graphicsView_4"/>
-              </item>
-             </layout>
-            </widget>
-           </item>
            <item row="0" column="1">
             <widget class="QWidget" name="widget_23" native="true">
              <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1214,40 +1419,12 @@
               <item>
                <widget class="QLabel" name="label_32">
                 <property name="text">
-                 <string>Graph 7: Vị trí trọng tâm X của khâu 1</string>
+                 <string>Graph 7: Vị trí trọng tâm Y của khâu 1</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="PlotWidget" name="graphicsView_5"/>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QWidget" name="widget_24" native="true">
-             <layout class="QVBoxLayout" name="verticalLayout">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QLabel" name="label_33">
-                <property name="text">
-                 <string>Graph 6: Vị trí trọng tâm Y của khâu 1</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="PlotWidget" name="graphicsView_6"/>
               </item>
              </layout>
             </widget>
@@ -1283,6 +1460,9 @@
            <item row="2" column="0">
             <widget class="QWidget" name="widget_26" native="true">
              <layout class="QVBoxLayout" name="verticalLayout_19">
+              <property name="spacing">
+               <number>6</number>
+              </property>
               <property name="leftMargin">
                <number>0</number>
               </property>
@@ -1332,6 +1512,62 @@
               </item>
               <item>
                <widget class="PlotWidget" name="graphicsView_13"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QWidget" name="widget_22" native="true">
+             <layout class="QVBoxLayout" name="verticalLayout_10">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_31">
+                <property name="text">
+                 <string>Graph 5: Vị trí trọng tâm X của khâu 1</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="PlotWidget" name="graphicsView_4"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QWidget" name="widget_24" native="true">
+             <layout class="QVBoxLayout" name="verticalLayout">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_33">
+                <property name="text">
+                 <string>Graph 6: Vị trí trọng tâm X của khâu 2</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="PlotWidget" name="graphicsView_6"/>
               </item>
              </layout>
             </widget>
