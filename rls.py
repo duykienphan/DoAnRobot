@@ -12,11 +12,11 @@ class RLS:
         self.theta_p = np.zeros((8, 1))    
         self.theta = np.zeros((8, 1))
 
-        self.m1 = 0.3493
-        self.m2 = 0.0823
-        self.l1=0.201
-        self.l2=0.152
-        self.g=9.8
+        self.m1 = 0.346
+        self.m2 = 0.06
+        self.l1 = 0.21
+        self.l2 = 0.14
+        self.g  = 9.8
 
         # Đánh giá
         self.x1_total = 0
@@ -58,7 +58,7 @@ class RLS:
         a27 = 0
         a28 = 0
 
-        lamda = 0.98
+        lamda = 0.995
         y_k = np.array([[t1], [t2]])
         phi = np.array([[a11, a12, a13, a14, a15, a16, a17, a18],
                         [a21, a22, a23, a24, a25, a26, a27, a28]])

@@ -51,7 +51,7 @@ class Inverse_Kinematic:
         rad = deg * (math.pi/180)
         rad = round(rad, 4)
         if rad == -0.0000:
-            rad = 0
+            rad = 0.0
         return float(rad)
     
 if __name__ == "__main__":

@@ -506,15 +506,15 @@ class MainWindow(QMainWindow):
 
         if len(values) == 12:
             self.position_1 = float(values[0])/182
-            self.torque_1 = int(values[1])/245
+            self.torque_1 = float(values[1])/245
             self.speed_1 = int(values[2])
-            self.torque_pid_1 = int(values[3])/245
+            self.torque_pid_1 = float(values[3])/245
             self.position_set_1 = float(values[4])/10
             self.temp_1 = int(values[5])
             self.position_2 = float(values[6])/182*(-1)
-            self.torque_2 = int(values[7])/245*(-1)
+            self.torque_2 = float(values[7])/245*(-1)
             self.speed_2 = int(values[8])
-            self.torque_pid_2 = int(values[9])/245*(-1)
+            self.torque_pid_2 = float(values[9])/245*(-1)
             self.position_set_2 = float(values[10])/10*(-1)
             self.temp_2 = int(values[11])
 
@@ -576,11 +576,11 @@ class MainWindow(QMainWindow):
         self.uic.lineEdit_21.setText(str(eval4)[0:5]+"%")
 
     def mcu_params_display(self):
-        self.uic.lineEdit_10.setText(str(round(self.position_1, 0)))
+        self.uic.lineEdit_10.setText(str(round(self.position_1, 2)))
         self.uic.lineEdit_11.setText(str(round(self.torque_1, 2)))
         self.uic.lineEdit_12.setText(str(self.speed_1))
         self.uic.lineEdit_13.setText(str(self.temp_1))
-        self.uic.lineEdit_14.setText(str(round(self.position_2, 0)))
+        self.uic.lineEdit_14.setText(str(round(self.position_2, 2)))
         self.uic.lineEdit_15.setText(str(round(self.torque_2, 2)))
         self.uic.lineEdit_16.setText(str(self.speed_2))
         self.uic.lineEdit_17.setText(str(self.temp_2))
@@ -606,7 +606,7 @@ class MainWindow(QMainWindow):
             self.rls.y1_total = 0
             self.rls.x2_total = 0
             self.rls.y2_total = 0
-            self.rls.count = 0
+            self.rls.count =    0
 
 ###################################################################################################
 

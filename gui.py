@@ -856,7 +856,7 @@ class Ui_MainWindow(object):
         self.label_40.setText(_translate("MainWindow", "Graph 7: Hệ số ma sát của khâu 1"))
         self.label_41.setText(_translate("MainWindow", "Graph 9: Hệ số ma sát của khâu 2"))
         self.label_31.setText(_translate("MainWindow", "Graph 5: Vị trí trọng tâm X của khâu 1"))
-        self.label_33.setText(_translate("MainWindow", "Graph 6: Vị trí trọng tâm Y của khâu 1"))
+        self.label_33.setText(_translate("MainWindow", "Graph 6: Vị trí trọng tâm X của khâu 2"))
         self.groupBox.setTitle(_translate("MainWindow", "Serial Monitor"))
         self.pushButton.setText(_translate("MainWindow", "Send"))
         self.pushButton_2.setText(_translate("MainWindow", "Clear"))

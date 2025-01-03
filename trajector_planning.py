@@ -75,25 +75,25 @@ class Trajector:
 
     def traingle_operate(self, t_time=6, cycle=0.02):
         ta = 0
-        xa = 10
+        xa = 22
         ya = 20
         vxa = 0
         vya = 0
 
         tb = 3
-        xb = -10
-        yb = 20
+        xb = 0
+        yb = 42
         vxb = 0
         vyb = 0
 
         tc = 6
-        xc = 0
-        yc = 30
+        xc = -26
+        yc = 23
         vxc = 0
         vyc = 0
 
         td = 9
-        xd = 10
+        xd = 22
         yd = 20
         vxd = 0
         vyd = 0
@@ -122,7 +122,7 @@ class Trajector:
             x, y = round(x, 2), round(y, 2)
             t += cycle
             loop_time = t % loop_duration
-            angle_x, angle_y = self.IK.IK_2DOF(x, 0, y, 1)
+            angle_x, angle_y = self.IK.IK_2DOF(x, 0, y, 2)
             angle_x, angle_y = self.IK.rad2deg(angle_x), self.IK.rad2deg(angle_y)
             list_coordinate.append((angle_x, angle_y))
 
