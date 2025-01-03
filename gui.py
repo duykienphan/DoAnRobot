@@ -777,7 +777,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -799,7 +799,7 @@ class Ui_MainWindow(object):
         self.label_5.setText(_translate("MainWindow", "Ki:"))
         self.lineEdit_3.setText(_translate("MainWindow", "0"))
         self.label_6.setText(_translate("MainWindow", "Kd:"))
-        self.lineEdit_4.setText(_translate("MainWindow", "1500"))
+        self.lineEdit_4.setText(_translate("MainWindow", "500"))
         self.label_19.setText(_translate("MainWindow", "Angle:"))
         self.lineEdit_8.setText(_translate("MainWindow", "0"))
         self.label_15.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">PID Parameters 2</span></p></body></html>"))
@@ -856,7 +856,7 @@ class Ui_MainWindow(object):
         self.label_40.setText(_translate("MainWindow", "Graph 7: Hệ số ma sát của khâu 1"))
         self.label_41.setText(_translate("MainWindow", "Graph 9: Hệ số ma sát của khâu 2"))
         self.label_31.setText(_translate("MainWindow", "Graph 5: Vị trí trọng tâm X của khâu 1"))
-        self.label_33.setText(_translate("MainWindow", "Graph 6: Vị trí trọng tâm Y của khâu 1"))
+        self.label_33.setText(_translate("MainWindow", "Graph 6: Vị trí trọng tâm X của khâu 2"))
         self.groupBox.setTitle(_translate("MainWindow", "Serial Monitor"))
         self.pushButton.setText(_translate("MainWindow", "Send"))
         self.pushButton_2.setText(_translate("MainWindow", "Clear"))

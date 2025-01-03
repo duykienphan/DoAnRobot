@@ -200,7 +200,8 @@ class MainWindow(QMainWindow):
         self.temp_2 = 0
         self.torque_pid_2 = 0
 
-        self.csv_data = []
+        self.csv_data_esp = []
+        self.csv_data_ident = []
 
         # Nhận dạng hệ thống
         self.x1 = 0
@@ -250,8 +251,8 @@ class MainWindow(QMainWindow):
         self.uic.actionExit.triggered.connect(self.exit_application)
         self.uic.actionGraph_3.triggered.connect(self.hide_graph_3)
         self.uic.actionUnhide_All.triggered.connect(self.unhide_all)
-        self.uic.actionSave.triggered.connect(self.csv_save)
-        self.uic.actionSave_as.triggered.connect(self.csv_save)
+        self.uic.actionSave.triggered.connect(self.csv_save_btn)
+        self.uic.actionSave_as.triggered.connect(self.csv_save_btn)
         self.uic.actionController.triggered.connect(self.show_page)
         self.uic.actionIndentification.triggered.connect(self.show_page_2)
 
@@ -405,8 +406,10 @@ class MainWindow(QMainWindow):
             #     self.torque_2, 
             #     self.IK.deg2rad(self.position_1), 
             #     self.IK.deg2rad(self.position_2))
-            print(f"x1: {self.x1}, y1: {self.x2}, x2: {self.x2}, y2: {self.y2}, J1: {self.J1}, J2: {self.J2}")
+            print(f"x1: {self.x1}, y1: {self.y1}, x2: {self.x2}, y2: {self.y2}, J1: {self.J1}, J2: {self.J2}")
             print()
+            temp = f"{self.x1}/{self.y1}/{self.x2}/{self.y2}/{self.J1}/{self.J2}"
+            self.csv_data_ident.append(temp)
         # Hiển thị các thông số lấy từ động cơ ở Page 2
         self.mcu_params_display()
 
@@ -498,7 +501,7 @@ class MainWindow(QMainWindow):
     def handle_data_received(self, data):
         #print(data)
         self.serial_monitor(data) # Phải mở lại khi debug xong
-        self.csv_data.append(data)
+        self.csv_data_esp.append(data)
 
         #try:
         values = data.split('/') 
@@ -506,15 +509,15 @@ class MainWindow(QMainWindow):
 
         if len(values) == 12:
             self.position_1 = float(values[0])/182
-            self.torque_1 = int(values[1])/245
+            self.torque_1 = float(values[1])/245
             self.speed_1 = int(values[2])
-            self.torque_pid_1 = int(values[3])/245
+            self.torque_pid_1 = float(values[3])/245
             self.position_set_1 = float(values[4])/10
             self.temp_1 = int(values[5])
             self.position_2 = float(values[6])/182*(-1)
-            self.torque_2 = int(values[7])/245*(-1)
+            self.torque_2 = float(values[7])/245*(-1)
             self.speed_2 = int(values[8])
-            self.torque_pid_2 = int(values[9])/245*(-1)
+            self.torque_pid_2 = float(values[9])/245*(-1)
             self.position_set_2 = float(values[10])/10*(-1)
             self.temp_2 = int(values[11])
 
@@ -607,6 +610,7 @@ class MainWindow(QMainWindow):
             self.rls.x2_total = 0
             self.rls.y2_total = 0
             self.rls.count = 0
+            self.csv_data_ident = []
 
 ###################################################################################################
 
@@ -617,19 +621,37 @@ class MainWindow(QMainWindow):
     def show_page_2(self):
         self.uic.stackedWidget.setCurrentWidget(self.uic.page_2)
 
-    def csv_save(self):
-        file_name = time.strftime("data_%Y%m%d_%H%M%S.csv")
+    def csv_save_btn(self):
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        self.csv_save(self.csv_data_esp, label="esp", timestamp=timestamp)
+        self.csv_save(self.csv_data_ident, label="ident", timestamp=timestamp)
+
+    def csv_save(self, csv_data, label="", timestamp=None):
+        if timestamp is None:
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+        file_name = f"data_{label}_{timestamp}.csv"
+
+        if not hasattr(csv_data, '__iter__'):
+            self.serial_monitor(f"Error: csv_data must be an iterable (label: {label}).")
+            return
+
         try:
             with open(file_name, mode='w', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
-                for row in self.csv_data:
-                    writer.writerow(row.split(','))
-            error_message = f"Data saved to {file_name} successfully."
-            print(error_message)
-            self.serial_monitor(error_message)
+                for row in csv_data:
+                    if '/' in row:
+                        writer.writerow(row.split('/'))
+                    elif ',' in row:
+                        writer.writerow(row.split(','))
+                    else:
+                        writer.writerow([row])  # Writes as a single value if no delimiter.
+
+            log_message = f"Data saved to {file_name} successfully."
+            print(log_message)
+            self.serial_monitor(log_message)
         except Exception as e:
-            error_message = f"Error saving to CSV: {e}"
-            self.serial_monitor(error_message)
+            log_message = f"Error saving to CSV ({label}): {type(e).__name__}: {e}"
+            self.serial_monitor(log_message)
 
     def hide_graph_3(self):
         self.uic.label_10.setVisible(False)

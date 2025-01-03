@@ -31,7 +31,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -341,7 +341,7 @@
                        </size>
                       </property>
                       <property name="text">
-                       <string>1500</string>
+                       <string>500</string>
                       </property>
                      </widget>
                     </item>
@@ -1562,7 +1562,7 @@
               <item>
                <widget class="QLabel" name="label_33">
                 <property name="text">
-                 <string>Graph 6: Vị trí trọng tâm Y của khâu 1</string>
+                 <string>Graph 6: Vị trí trọng tâm X của khâu 2</string>
                 </property>
                </widget>
               </item>
