@@ -1,4 +1,7 @@
-Setut pyqtgraph: https://www.youtube.com/watch?v=IKmDEmanlMw&ab_channel=AhmedAMMAR
+##Phần mềm đọc dữ liệu và điều khiển môn Đồ án Robot - Ngành công nghệ kỹ thuật điều khiển và tự động hoá
+
+Video demo: https://youtu.be/MEp3YNUgx4c
+Setup pyqtgraph library: https://www.youtube.com/watch?v=IKmDEmanlMw&ab_channel=AhmedAMMAR
 
 pip install -r requirements.txt
 python main.py
